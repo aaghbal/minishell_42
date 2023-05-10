@@ -41,6 +41,11 @@ t_token	*ft_tokenlast(t_token *lst);
 void	ft_tokenadd_back(t_token **lst, t_token *new);
 char	*char_to_str(char *line);
 t_token	*new_token(char *cmd, e_type type);
+char	*print_token(int n);
+void	single_cout(int *i, char	*line, t_token	**token);
+void	double_cout(int *i, char	*line, t_token	**token);
+void	default_cmd(int *i, char	*line, t_token	**token);
+
 
 
 #endif
