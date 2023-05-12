@@ -12,53 +12,53 @@
 
 #include "minishell.h"
 
-// void	double_cout(int *i, char	*line, t_token	**token)
-// {
-// 	char *str;
-// 	int c = 0;
-// 	int l = 0;
 
-// 	str = NULL;
-// 	(*i)++;
-// 	c++;
-// 	while(line[(*i)] == '\"' && line[(*i)])
-// 	{
-// 		(*i)++;
-// 		c++;
-// 	}
-// 	while (line[(*i)] != '\"' && line[(*i)])
-// 	{
-// 		str = append_char(str, line[(*i)]);
-// 		(*i)++;
-// 	}
-// 	while(line[(*i)] == '\"' && line[(*i)])
-// 	{
-// 		(*i)++;
-// 		l++;
-// 	}
-// 	if (c == l && line[(*i) - 1])
-// 		ft_tokenadd_back(token, new_token(str, get_type(str)));
-// 	free(str);
-// 	str = NULL;
-// }
-
-char * char_to_str(char *line)
+char	*quotes(char *line,char *str, int *len)
 {
-	char *str;
-	if ((line[0] == '<' && line[1] == '<') || (line[0] == '>' && line[1] == '>'))
+	int on;
+	int	i;
+
+	on = 1;
+	i = *len;
+	while (line[i])
 	{
-		str = malloc(sizeof(char) * 3);
-		str[0] = line[0];
-		str[1] = line[1];
-		str[2] = '\0';
+		if ((line[i] == ' ' || line[i] == '\t' || is_token(line[i])) && on == 0)
+		{
+			*len = i;
+			break;
+		}
+		if (line[i] == '\"')
+			on = 0;
+		else
+			str = append_char(str, line[i]);
+		i++;
 	}
-	else
+	*len = i;
+	return (str);
+}
+
+char	*single_quotes(char *line,char *str, int *len)
+{
+	int on;
+	int	i;
+
+	on = 1;
+	i = *len;
+	while (line[i])
 	{
-		str = malloc(sizeof(char )* 2);
-		str[0] = line[0];
-		str[1] = '\0';
+		if ((line[i] == ' ' || line[i] == '\t' || is_token(line[i])) && on == 0)
+		{
+			*len = i;
+			break;
+		}
+		if (line[i] == '\'')
+			on = 0;
+		else
+			str = append_char(str, line[i]);
+		i++;
 	}
-	return str;
+	*len = i;
+	return (str);
 }
 
 char *print_token(int n)
@@ -86,41 +86,67 @@ t_token * new_token(char *cmd, e_type type)
 	return (node);
 }
 
+int is_char(char c)
+{
+	return (c == ' ' || c == '\t' || is_token(c));
+}
+
+char *get_token(char *line)
+{
+	int i;
+
+	i = 0;
+	if (line[i] && (line[i] == '|' || line[i] == '<' || line[i] == '>') && (line[i + 1] != '<' && line[i + 1] != '>'))
+		return ft_substr(line, 0, 1);
+	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<') || (line[i] == '>' && line[i + 1] == '>')))
+	{
+		return ft_substr(line, 0, 2);
+	}
+	return NULL;
+
+}
+
 void token_line(char *line)
 {
 	int		i;
 	char	*str;
-	char	*newstr;
+	char	*new;
 	t_token	*token;
 
 	str = NULL;
-	newstr = NULL;
 	token = NULL;
+	new= NULL;
 	i = 0;
 	while (line[i])
 	{
-		while (line[i] && line[i] == ' ')
+		while (line[i] == ' ' || line[i] == '\t')
 			i++;
-		 if (line[i] == '\"')
+		if (is_token(line[i]))
 		{
-			i++;
-			str  = double_quotes(&i, line, &token, str);
-			ft_tokenadd_back(&token, new_token(str, get_type(str)));
-			free(str);
-			str = NULL;
-			
+			str = get_token(&line[i++]);
+			if (ft_strlen(str) == 2)
+				i++;
 		}
+		else if (line[i] == '\"')
+			str = quotes(line, str, &i);
 		else if (line[i] == '\'')
+			str = single_quotes(line, str, &i);
+		else
 		{
-			i++;
-			str  = single_quotes(&i, line, &token, str);
+			while (line[i] && !is_char(line[i]))
+			{
+				if (line[i] != '\"' && line[i] != '\'')
+					str = append_char(str, line[i++]);
+				else
+					str = quotes(line, str, &i);
+			}
+		}
+		if (str)
+		{
 			ft_tokenadd_back(&token, new_token(str, get_type(str)));
 			free(str);
-			str = NULL;
+			str= NULL;
 		}
-		if (line[i] != '\"' && line[i] != '\'')
-			default_cmd(&i, line, &token, str);
-		i++;
 	}
 	t_token *tmp = token;
 	while (tmp)

@@ -43,12 +43,10 @@ void	ft_tokenadd_back(t_token **lst, t_token *new);
 char	*char_to_str(char *line);
 t_token	*new_token(char *cmd, e_type type);
 char	*print_token(int n);
-char	*single_quotes(int *i, char	*line, t_token	**token, char *str);
-char	*double_quotes(int *i, char	*line, t_token	**token, char *str);
-void	default_cmd(int *i, char	*line, t_token	**token, char	*str);
-void	double_cout(int *i, char	*line, t_token	**token);
+int		get_end(char *line, int i);
+char	*quotes(char *line,char *str, int *len);
+char	*single_quotes(char *line,char *str, int *len);
 
-void	fc(int *i, char	*line, char *str);
 
 
 
