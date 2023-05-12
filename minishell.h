@@ -23,7 +23,8 @@
 typedef enum type{
 	TokenWord,
 	tokenPipe,
-	redirections
+	redirections,
+	NONE
 }e_type;
 
 typedef struct s_token{
@@ -42,9 +43,12 @@ void	ft_tokenadd_back(t_token **lst, t_token *new);
 char	*char_to_str(char *line);
 t_token	*new_token(char *cmd, e_type type);
 char	*print_token(int n);
-void	single_cout(int *i, char	*line, t_token	**token);
+char	*single_quotes(int *i, char	*line, t_token	**token, char *str);
+char	*double_quotes(int *i, char	*line, t_token	**token, char *str);
+void	default_cmd(int *i, char	*line, t_token	**token, char	*str);
 void	double_cout(int *i, char	*line, t_token	**token);
-void	default_cmd(int *i, char	*line, t_token	**token);
+
+void	fc(int *i, char	*line, char *str);
 
 
 

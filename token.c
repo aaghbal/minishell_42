@@ -42,6 +42,8 @@ int is_token(char c)
 
 e_type get_type(char *str)
 {
+	if (!str)
+		return (NONE);
 	if (!ft_strncmp(str, "|", 1))
 		return (tokenPipe);
 	else if (!ft_strncmp(str, ">", 1) || !ft_strncmp(str, "<", 1))

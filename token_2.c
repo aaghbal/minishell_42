@@ -12,6 +12,36 @@
 
 #include "minishell.h"
 
+// void	double_cout(int *i, char	*line, t_token	**token)
+// {
+// 	char *str;
+// 	int c = 0;
+// 	int l = 0;
+
+// 	str = NULL;
+// 	(*i)++;
+// 	c++;
+// 	while(line[(*i)] == '\"' && line[(*i)])
+// 	{
+// 		(*i)++;
+// 		c++;
+// 	}
+// 	while (line[(*i)] != '\"' && line[(*i)])
+// 	{
+// 		str = append_char(str, line[(*i)]);
+// 		(*i)++;
+// 	}
+// 	while(line[(*i)] == '\"' && line[(*i)])
+// 	{
+// 		(*i)++;
+// 		l++;
+// 	}
+// 	if (c == l && line[(*i) - 1])
+// 		ft_tokenadd_back(token, new_token(str, get_type(str)));
+// 	free(str);
+// 	str = NULL;
+// }
+
 char * char_to_str(char *line)
 {
 	char *str;
@@ -45,6 +75,8 @@ t_token * new_token(char *cmd, e_type type)
 {
 	t_token * node;
 
+	if (type == NONE)
+		return (NULL);
 	node = (t_token *)malloc(sizeof(t_token));
 	if (node == NULL)
 		return (NULL);
@@ -58,21 +90,36 @@ void token_line(char *line)
 {
 	int		i;
 	char	*str;
+	char	*newstr;
 	t_token	*token;
 
 	str = NULL;
+	newstr = NULL;
 	token = NULL;
 	i = 0;
 	while (line[i])
 	{
 		while (line[i] && line[i] == ' ')
 			i++;
-		if (line[i] == '\"')
-			double_cout(&i, line, &token);
+		 if (line[i] == '\"')
+		{
+			i++;
+			str  = double_quotes(&i, line, &token, str);
+			ft_tokenadd_back(&token, new_token(str, get_type(str)));
+			free(str);
+			str = NULL;
+			
+		}
 		else if (line[i] == '\'')
-			single_cout(&i, line, &token);
-		if (line[i] != '\0')
-			default_cmd(&i, line, &token);
+		{
+			i++;
+			str  = single_quotes(&i, line, &token, str);
+			ft_tokenadd_back(&token, new_token(str, get_type(str)));
+			free(str);
+			str = NULL;
+		}
+		if (line[i] != '\"' && line[i] != '\'')
+			default_cmd(&i, line, &token, str);
 		i++;
 	}
 	t_token *tmp = token;

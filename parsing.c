@@ -12,55 +12,78 @@
 
 #include "minishell.h"
 
-void	double_cout(int *i, char	*line, t_token	**token)
+char get_next_state(char *line)
 {
-	char *str;
-	int c = 0;
-	int l = 0;
+	int	i;
 
-	str = NULL;
-	(*i)++;
-	c++;
-	while(line[(*i)++] == '\"' && line[(*i)])
-		c++;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'')
+			return line[i];
+		else if (line[i] == '\"')
+			return '\"';
+		i++;
+	}
+	return '\"';
+}
+
+char	*double_quotes(int *i, char	*line,t_token **token, char *str)
+{
+
+	char *newstr;
+
+	newstr = NULL;
 	while (line[(*i)] != '\"' && line[(*i)])
 	{
 		str = append_char(str, line[(*i)]);
 		(*i)++;
 	}
-	while(line[(*i)] == '\"' && line[(*i)])
+	if (line[(*i)] && line[*i] == '\"')
+		(*i)++;
+	if (line[*i] && line[*i] != ' ' && line[(*i)] != '|' && line[*i] != '\"' &&  line[*i] != '\'')
+	{
+		if (line[*i] && get_next_state(&line[*(i)]) == '\'')
+			str = ft_strjoin(str, single_quotes(i, line, token, newstr));
+		else
+			str = ft_strjoin(str, double_quotes(i, line, token, newstr));
+	}
+	if (line[(*i)] && line[*i] == '\'')
 	{
 		(*i)++;
-		l++;
+		str = single_quotes(i, line, token, str);
 	}
-	if (c == l && line[(*i) - 1])
-		ft_tokenadd_back(token, new_token(str, get_type(str)));
-	free(str);
-	str = NULL;
+	return(str);
 }
-void	single_cout(int *i, char	*line, t_token	**token)
+char	*single_quotes(int *i, char	*line, t_token	**token, char *str)
 {
-	char *str;
+	char *newstr;
 
-	str = NULL;
-	(*i)++;
-	while (line[*i] == '\''  && line[*i])
+	newstr = NULL;
+	while (line[(*i)] != '\'' && line[(*i)])
+	{
+		str = append_char(str, line[(*i)]);
 		(*i)++;
-	while (line[*i] != '\''  && line[*i])
-		str = append_char(str, line[(*i)++]);
-	while (line[*i] == '\''  && line[*i])
+	}
+	if (line[(*i)] && line[*i] == '\'')
 		(*i)++;
-	ft_tokenadd_back(token, new_token(str, get_type(str)));
-	free(str);
-	str = NULL;
-	(*i)++;
+	if (line[*i] && line[*i] != ' ' && line[(*i)] != '|' && line[*i] != '\'' && line[*i] != '\"')
+	{
+		if (get_next_state(&line[*(i)]) == '\'')
+			str = ft_strjoin(str, single_quotes(i, line, token, newstr));
+		else
+			str = ft_strjoin(str, double_quotes(i, line, token, newstr));
+	}
+	if (line[(*i)] && line[*i] == '\"')
+	{
+		(*i)++;
+		str = double_quotes(i, line, token, str);
+	}
+	return(str);
 }
 
-void	default_cmd(int *i, char	*line, t_token	**token)
+void	default_cmd(int *i, char	*line, t_token	**token, char	*str)
 {
-	char	*str;
-
-	str = NULL;
 	while (line[*i] && !is_token(line[*i]) && line[*i] != ' ')
 		str = append_char(str, line[(*i)++]);
 	if (str && (is_token(line[*i]) || line[*i] == ' ' || line[*i] == '\0'))

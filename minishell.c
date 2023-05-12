@@ -18,8 +18,6 @@ int main(int ac, char ** av, char *envp[])
 	(void)av;
 	(void)envp;
 	char *input;
-	int c = 0;
-	int k = 0;
 
 
 	while (1)
@@ -27,8 +25,6 @@ int main(int ac, char ** av, char *envp[])
 
 		input = readline("minishell> ");
 		if (!input)
-			break;
-		if (c % 2 != 0 || k % 2 != 0)
 			break;
 		add_history(input);
 		token_line(input);
