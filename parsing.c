@@ -12,25 +12,77 @@
 
 #include "minishell.h"
 
-int get_end(char *line, int i)
+char	*double_quotes(char *line,char *str, int *len)
 {
-	if ("\"")
+	int on;
+
+	on = 1;
+	++(*len);
+	if (line[(*len)] != '\"')
+		str = append_char(str, line[(*len)++]);
+	while (line[(*len)])
 	{
-      while (line[i])
-      {
-	      if (line[i] == '\"')
-	      	return (i);
-	      i++;
-      }
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+			break;
+		if (line[(*len)] == '\'' && line[(*len) - 1] == '\"')
+			str = single_quotes(line, str, len);
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+			break;
+		if (line[(*len)] == '\"')
+			on = 0;
+		else
+			str = append_char(str, line[(*len)]);
+		(*len)++;
 	}
-	else
+	return (str);
+}
+
+char	*single_quotes(char *line,char *str, int *len)
+{
+	int on;
+
+	on = 1;
+	++(*len);
+	if (line[(*len)] != '\'')
+		str = append_char(str, line[(*len)++]);
+	while (line[(*len)])
 	{
-	  while (line[i])
-      {
-	      if (line[i] == '\'')
-	      	return (i);
-	      (i)++;
-      }
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+			break;
+		if (line[(*len)] == '\"' && line[(*len) - 1] == '\'')
+			str = double_quotes(line, str, len);
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+			break;
+		if (line[(*len)] == '\'')
+			on = 0;
+		else
+			str = append_char(str, line[(*len)]);
+		(*len)++;
 	}
-	return 0;
+	return (str);
+}
+
+void	default_cmd(t_data *data, char *line)
+{
+	while (line[(data->i)] && !is_char(line[data->i]))
+	{
+		if (line[(data->i)] != '\"' && line[data->i] != '\'')
+			data->str = append_char(data->str, line[(data->i)++]);
+		else
+		{
+
+			if (line[(data->i)] == '\"')
+				data->str = double_quotes(line, data->str, &(data->i));
+			else if (line[data->i] == '\'')
+				data->str = single_quotes(line, data->str, &(data->i));
+
+		}
+	}
+}
+
+void	add_free(t_data *data, t_token **token)
+{
+	ft_tokenadd_back(token, new_token(data->str, get_type(data->str)));
+	free(data->str);
+	data->str= NULL;
 }

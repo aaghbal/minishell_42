@@ -33,7 +33,7 @@ char *append_char(char *str, char c)
 	return res;
 }
 
-int is_token(char c)
+int check_token(char c)
 {
 	if (c == '|' || c == '<' || c == '>')
 		return 1;
@@ -59,6 +59,7 @@ t_token	*ft_tokenlast(t_token *lst)
 		lst = lst->next;
 	return (lst);
 }
+
 
 void	ft_tokenadd_back(t_token **lst, t_token *new)
 {

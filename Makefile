@@ -14,7 +14,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 HEADER = minishell.h
 NAME = minishell
-SRC = minishell.c token.c token_2.c parsing.c
+SRC = minishell.c token.c token_2.c parsing.c arg.c
 RM = rm -rf
 OBJ_SRC = $(SRC:.c=.o)
 
