@@ -13,16 +13,6 @@
 #include "minishell.h"
 
 
-char *print_token(int n)
-{
-	if (n == 0)
-		return ("Word");
-	else if (n == 1) 
-		return ("Pipe");
-	else
-		return ("redirection");
-}
-
 t_token * new_token(char *cmd, e_type type)
 {
 	t_token * node;
@@ -58,7 +48,6 @@ char *get_token(char *line)
 	|| (line[i] == '>' && line[i + 1] == '>')))
 		return ft_substr(line, 0, 2);
 	return NULL;
-
 }
 
 void	is_token(t_data *data, char *line)
@@ -68,7 +57,9 @@ void	is_token(t_data *data, char *line)
 			(data->i)++;
 }
 
-void token_line(char *line)
+
+
+int token_line(char *line)
 {
 	t_data *data;
 	t_arg *arg;
@@ -94,6 +85,11 @@ void token_line(char *line)
 		if (data->str)
 			add_free(data, &token);
 	}
+	if (ft_parsing(&token) == 0)
+	{
+		free_list(token);
+		return(0);
+	}
 	is_arg(token, &arg);
 	for(t_arg *t = arg;t; )
 	{
@@ -103,6 +99,6 @@ void token_line(char *line)
 		t = t->next;
 		printf("-----------------\n");
 	}
-	printf("yes\n");
+	return (1);
 }
 

@@ -44,9 +44,10 @@ typedef struct s_data
 {
 	int		i;
 	char	*str;
+	
 }t_data;
 
-void	token_line(char *line);
+int		token_line(char *line);
 char	*append_char(char *str, char c);
 int		check_token(char c);
 e_type	get_type(char *str);
@@ -69,6 +70,9 @@ char **alloc_arg(char **args, char *cmd);
 t_arg	*ft_arglast(t_arg *lst);
  void	free_tab(char **tab);
  void	is_arg(t_token *tmp, t_arg **arg);
+  void	free_list(t_token *tab);
+  int	ft_parsing_2(t_token **token);
+  int	ft_parsing(char *tmp);
 
 
 

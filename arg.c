@@ -102,3 +102,16 @@ void	is_arg(t_token *tmp, t_arg **arg)
 		free(tab[i++]);
 	free(tab);
 }
+
+ void	free_list(t_token *tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab)
+	{
+		free(tab);
+		tab = tab->next;
+	}
+	free(tab);
+}

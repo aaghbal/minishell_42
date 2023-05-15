@@ -22,11 +22,13 @@ char	*double_quotes(char *line,char *str, int *len)
 		str = append_char(str, line[(*len)++]);
 	while (line[(*len)])
 	{
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
+		|| check_token(line[(*len)])) && on == 0)
 			break;
 		if (line[(*len)] == '\'' && line[(*len) - 1] == '\"')
 			str = single_quotes(line, str, len);
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
+		|| check_token(line[(*len)])) && on == 0)
 			break;
 		if (line[(*len)] == '\"')
 			on = 0;
@@ -47,11 +49,13 @@ char	*single_quotes(char *line,char *str, int *len)
 		str = append_char(str, line[(*len)++]);
 	while (line[(*len)])
 	{
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
+		|| check_token(line[(*len)])) && on == 0)
 			break;
 		if (line[(*len)] == '\"' && line[(*len) - 1] == '\'')
 			str = double_quotes(line, str, len);
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t' || check_token(line[(*len)])) && on == 0)
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
+		|| check_token(line[(*len)])) && on == 0)
 			break;
 		if (line[(*len)] == '\'')
 			on = 0;
