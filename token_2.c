@@ -85,7 +85,7 @@ int token_line(char *line)
 		if (data->str)
 			add_free(data, &token);
 	}
-	if (ft_parsing(&token) == 0)
+	if (ft_parsing_2(&token) == 0)
 	{
 		free_list(token);
 		return(0);
@@ -96,6 +96,8 @@ int token_line(char *line)
 		printf("cmd = %s\n", t->cmd);
 		for (int i = 0; t->arg[i];i++)
 			printf("args[%d] = %s\n",i, t->arg[i]);
+		if (t->redfile)
+			printf("redfile = %s\n", t->redfile);
 		t = t->next;
 		printf("-----------------\n");
 	}

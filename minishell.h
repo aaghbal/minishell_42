@@ -35,6 +35,7 @@ typedef struct s_token{
 
 typedef struct s_arg{
 	char *cmd;
+	char *redfile;
 	char **arg;
 	e_type type;
 	struct s_arg *next;

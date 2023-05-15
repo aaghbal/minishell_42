@@ -48,6 +48,7 @@ t_arg * newarg_token(char *cmd, e_type type)
 	node->cmd = ft_strdup(cmd);
 	node->arg = alloc_arg(NULL, cmd);
 	node->type = type;
+	node->redfile = NULL;
 	node->next = NULL;
 	return (node);
 }
@@ -80,6 +81,25 @@ void	is_arg(t_token *tmp, t_arg **arg)
 			{
 				ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, tmp->cmd);
 				tmp = tmp->next;
+			}
+			if (tmp && tmp->type == redirections)
+			{
+				puts("heey");
+				t_arg *red = newarg_token(tmp->cmd, tmp->type);
+				tmp = tmp->next;
+				if (tmp)
+					red->redfile = ft_strdup(tmp->cmd);
+				if (tmp)
+				{
+					tmp = tmp->next;
+					while (tmp && tmp->type == TokenWord)
+					{
+						ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, tmp->cmd);
+						tmp = tmp->next;
+					}
+				}
+				if (red)
+					ft_argadd_back(arg, red);
 			}
 		}
 		else
