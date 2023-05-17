@@ -18,11 +18,7 @@ int main(int ac, char ** av, char *envp[])
 	(void)av;
 	(void)envp;
 	char *input;
-	int i;
-	int j;
 
-	i = 0;
-	j = 0;
 	while (1)
 	{
 

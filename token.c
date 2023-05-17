@@ -45,10 +45,10 @@ e_type get_type(char *str)
 	if (!str)
 		return (NONE);
 	if (!ft_strncmp(str, "|", 1))
-		return (tokenPipe);
+		return (tokenpipe);
 	else if (!ft_strncmp(str, ">", 1) || !ft_strncmp(str, "<", 1))
 		return (redirections);
-	return (TokenWord);
+	return (tokenword);
 }
 
 t_token	*ft_tokenlast(t_token *lst)

@@ -11,6 +11,21 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+int	get_next_quotes(char *line, int n, int i)
+{
+	char c;
+	
+	c = '\"';
+	if (n == 1)
+		c = '\'';
+	while (line[i])
+	{
+		if (line[i] == c)
+			return (1);
+		i++;
+	}
+	return(0);
+}
 
 char	*double_quotes(char *line,char *str, int *len)
 {
@@ -25,8 +40,11 @@ char	*double_quotes(char *line,char *str, int *len)
 		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
 		|| check_token(line[(*len)])) && on == 0)
 			break;
-		if (line[(*len)] == '\'' && line[(*len) - 1] == '\"')
+		if (line[(*len)] == '\'' && line[(*len) - 1] == '\"' 
+		&& get_next_quotes(line, 0, *len) == 0)
+		{
 			str = single_quotes(line, str, len);
+		}
 		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
 		|| check_token(line[(*len)])) && on == 0)
 			break;
@@ -52,7 +70,8 @@ char	*single_quotes(char *line,char *str, int *len)
 		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
 		|| check_token(line[(*len)])) && on == 0)
 			break;
-		if (line[(*len)] == '\"' && line[(*len) - 1] == '\'')
+		if (line[(*len)] == '\"' && line[(*len) - 1] == '\''
+		&& get_next_quotes(line, 1, *len) == 0)
 			str = double_quotes(line, str, len);
 		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
 		|| check_token(line[(*len)])) && on == 0)

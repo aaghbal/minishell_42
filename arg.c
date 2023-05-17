@@ -69,38 +69,42 @@ void	ft_argadd_back(t_arg **lst, t_arg *new)
 	}
 }
  
+void	append_word(t_token **tmp, t_arg **arg)
+{
+		while ((*tmp) && (*tmp)->type == tokenword)
+		{
+			ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, (*tmp)->cmd);
+			(*tmp) = (*tmp)->next;
+		}
+}
+void	apend_redirection(t_token **tmp, t_arg **arg)
+{
+	t_arg *red = newarg_token((*tmp)->cmd, (*tmp)->type);
+	(*tmp) = (*tmp)->next;
+	if ((tmp))
+		red->redfile = ft_strdup((*tmp)->cmd);
+	if ((tmp))
+	{
+		(*tmp) = (*tmp)->next;
+		append_word(tmp, arg);	
+	}
+	if (*tmp && (*tmp)->type == redirections)
+		apend_redirection(tmp, arg);
+	if (red)
+		ft_argadd_back(arg, red);
+}
+
 void	is_arg(t_token *tmp, t_arg **arg)
 {
 	while (tmp)
 	{
-		if (tmp->type == TokenWord)
+		if (tmp->type == tokenword)
 		{
-			ft_argadd_back(arg, newarg_token(tmp->cmd, tmp->type));
-			tmp = tmp->next;
-			while (tmp && tmp->type == TokenWord)
-			{
-				ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, tmp->cmd);
-				tmp = tmp->next;
-			}
+			ft_argadd_back(arg, newarg_token((tmp)->cmd, (tmp)->type));
+			(tmp) = (tmp)->next;
+			append_word(&tmp, arg);
 			if (tmp && tmp->type == redirections)
-			{
-				puts("heey");
-				t_arg *red = newarg_token(tmp->cmd, tmp->type);
-				tmp = tmp->next;
-				if (tmp)
-					red->redfile = ft_strdup(tmp->cmd);
-				if (tmp)
-				{
-					tmp = tmp->next;
-					while (tmp && tmp->type == TokenWord)
-					{
-						ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, tmp->cmd);
-						tmp = tmp->next;
-					}
-				}
-				if (red)
-					ft_argadd_back(arg, red);
-			}
+				apend_redirection(&tmp, arg);
 		}
 		else
 		{

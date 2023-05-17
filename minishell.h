@@ -21,8 +21,8 @@
 #include <readline/history.h>
 
 typedef enum type{
-	TokenWord,
-	tokenPipe,
+	tokenword,
+	tokenpipe,
 	redirections,
 	NONE
 }e_type;
@@ -74,6 +74,8 @@ t_arg	*ft_arglast(t_arg *lst);
   void	free_list(t_token *tab);
   int	ft_parsing_2(t_token **token);
   int	ft_parsing(char *tmp);
+  void	append_word(t_token **tmp, t_arg **arg);
+  void	apend_redirection(t_token **tmp, t_arg **arg);
 
 
 
