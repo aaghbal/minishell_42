@@ -27,7 +27,7 @@ char **alloc_arg(char **args, char *cmd)
 	}
 	new[i++] = ft_strdup(cmd);
 	new[i] = NULL;
-	free_tab(args);
+	free_tabb(args);
 	return (new);
 }
 
@@ -40,7 +40,7 @@ t_arg	*ft_arglast(t_arg *lst)
 	return (lst);
 }
 
-t_arg * newarg_token(char *cmd, e_type type)
+t_arg * newarg_token(char *cmd, t_type type)
 {
 	t_arg *node;
 
@@ -68,7 +68,7 @@ void	ft_argadd_back(t_arg **lst, t_arg *new)
 		}
 	}
 }
- 
+
 void	append_word(t_token **tmp, t_arg **arg)
 {
 		while ((*tmp) && (*tmp)->type == tokenword)
@@ -117,25 +117,25 @@ void	is_arg(t_token *tmp, t_arg **arg)
 	}
 }
 
- void	free_tab(char **tab)
+ void	free_tabb(char **tabb)
 {
 	int	i;
 
 	i = 0;
-	while (tab && tab[i])
-		free(tab[i++]);
-	free(tab);
+	while (tabb && tabb[i])
+		free(tabb[i++]);
+	free(tabb);
 }
 
- void	free_list(t_token *tab)
+ void	free_list(t_token *tabb)
 {
 	int	i;
 
 	i = 0;
-	while (tab)
+	while (tabb)
 	{
-		free(tab);
-		tab = tab->next;
+		free(tabb);
+		tabb = tabb->next;
 	}
-	free(tab);
+	free(tabb);
 }

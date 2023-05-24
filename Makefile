@@ -3,40 +3,47 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aaghbal <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/05/06 10:49:41 by aaghbal           #+#    #+#              #
-#    Updated: 2023/05/06 10:49:43 by aaghbal          ###   ########.fr        #
+#    Created: 2023/05/14 04:51:47 by zel-kach          #+#    #+#              #
+#    Updated: 2023/05/14 04:51:48 by zel-kach         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-HEADER = minishell.h
 NAME = minishell
-SRC = minishell.c token.c token_2.c parsing.c parsing_2.c arg.c
-RM = rm -rf
-OBJ_SRC = $(SRC:.c=.o)
 
-all : libft $(NAME)
+SRC = minishell.c signals.c cmds1.c cmds2.c cmds3.c cmds4.c cmds5.c arg.c parsing_2.c parsing.c token_2.c token.c
+OBJ = ${SRC:.c=.o}
 
-libft :
-	make -C ./libft
+libfta = ./libft/libft.a
 
-$(NAME) : $(OBJ_SRC) $(HEADER)
-	$(CC) $(CFLAGS) ./libft/libft.a  $(OBJ_SRC) -o $(NAME) -lreadline
+CC = cc
 
-%.o : %.c $(HEADER) libft.h
-	$(CC) $(CFLAGS) -c $<
+RM = rm -f
 
-clean :
-	make clean -C ./libft
-	$(RM) $(OBJ_SRC)
+CFLAGS = -Wall -Wextra -g
 
-fclean : clean
-	make fclean -C ./libft
-	$(RM) $(NAME)
+all: libftm ${NAME}
 
-re : fclean all
+${NAME}: ${OBJ}
+		${CC} ${OBJ} ${libfta} -lreadline -o $@
 
-.PHONY: all fclean clean re libft
+%.o: %.c minishell.h ${libfta}
+		${CC} ${CFLAGS} -c $<
+
+libftm:
+		make -C libft
+
+libftclean:
+			make clean -C libft
+
+libftfclean:
+			make fclean -C libft
+
+clean: libftclean
+		${RM} ${OBJ}
+
+fclean: clean libftfclean
+		${RM} ${NAME}
+
+re: fclean all
