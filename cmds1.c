@@ -3,66 +3,67 @@
 /*                                                        :::      ::::::::   */
 /*   cmds1.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/14 04:51:54 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/05/26 16:44:11 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
+
 
 void	my_cd(t_arg *cmd)
 {
 	chdir(cmd->arg[1]);
 }
 
-void	my_env(t_list *env_list, int pi)
+void	my_env(t_list *env_list)
 {
 	while (env_list)
 	{
-		printf("%s\n", env_list->content);
+		if (env_list->content)
+			printf("%s\n", env_list->content);
 		env_list = env_list->next;
 	}
 }
 
-void	print_epxport(t_list *export_list)
+void	my_pwd(void)
 {
-	while (export_list)
-	{
-		printf("declare -x %s\n", export_list->content);
-		export_list = export_list->next;
-	}
+	char	*pwd;
+
+	pwd = getcwd(NULL, 0);
+	printf ("%s\n", pwd);
 }
 
-void	my_export(t_list *export_list, t_list *env_list, char *var, int pi)
+void	my_exit(void)
+{
+	exit (printf("exit\n"));
+}
+
+void	my_echo(t_arg *cmd)
 {
 	int	i;
 
-	i = 0;
-	if (var)
+	if (!ft_strncmp(cmd->arg[1], "-n\0", 3))
 	{
-		if (var[0] == '=')
+		i = 1;
+		while (cmd->arg[++i])
 		{
-			printf("\e[0;31mnot a valid identifier\n");
-			return ;
+			printf("%s", cmd->arg[i]);
+			if (cmd->arg[i + 1])
+				printf(" ");
 		}
-		ft_lstadd_back(&export_list, ft_lstnew(var));
-		while (var[++i])
-		{
-			if (var[i] == '=' && var[i - 1] != ' '
-				&& var[i + 1] != ' ' && var[i + 1] != '\0')
-			{
-				ft_lstadd_back(&env_list, ft_lstnew(var));
-				return ;
-			}
-		}
-		return ;
 	}
-	print_epxport(export_list);
-}
-
-//???????????????
-void	my_unset(t_list *env_list)
-{
-	printf("%s\n", env_list->content);
+	else
+	{
+		i = 0;
+		while (cmd->arg[++i])
+		{
+			printf("%s", cmd->arg[i]);
+			if (cmd->arg[i + 1])
+				printf(" ");
+		}
+		printf("\n");
+	}
 }

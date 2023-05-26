@@ -3,135 +3,113 @@
 /*                                                        :::      ::::::::   */
 /*   cmds3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:04 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/14 11:02:05 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/05/26 21:36:02 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
-void	my_exec_cmd_e1(t_arg *cmd, int pi)
+void	close_file(int file_d, int fd[2])
 {
-	int		file_d;
-	char	*ppp[4];
-	int		save_out;
-
-	ppp[0] = cmd->arg[0];
-	ppp[1] = cmd->arg[1];
-	ppp[2] = cmd->arg[2];
-	ppp[3] = NULL;
-	file_d = 0;
-	save_out = dup(fileno(stdout));
-	if (pi == APND)
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_APPEND | 0644);
-	else
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_TRUNC | 0644);
-	dup2(file_d, 1);
-	if (!fork())
-	{
-		if (execve (cmd->cmd, ppp, NULL) == -1)
-		{
-			if (execve (ft_strjoin("/bin/", cmd->cmd), ppp, NULL) == -1)
-			{
-				if (execve (ft_strjoin("/usr/bin/", cmd->cmd), ppp, NULL) == -1)
-				{
-					printf("\e[0;31mminishell: command not found\n");
-					exit (0);
-				}
-			}
-		}
-	}
-	close(file_d);
-	dup2(save_out, fileno(stdout));
-	wait(0);
+	if (file_d)
+		close(file_d);
+	close(fd[1]);
+	close(fd[0]);
 }
 
-//redirect filename with flag
-void	my_exec_cmd_d1(t_arg *cmd, int pi)
+void	multi_red(t_arg *tmp)
 {
+	t_arg	*tmp2;
 	int		file_d;
-	char	*ppp[3];
-	int		save_out;
 
-	ppp[0] = cmd->arg[0];
-	ppp[1] = cmd->arg[1];
-	ppp[2] = NULL;
-	file_d = 0;
-	save_out = dup(fileno(stdout));
-	if (pi == APND)
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_APPEND | 0644);
-	else
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_TRUNC | 0644);
-	dup2(file_d, 1);
-	if (!fork())
+	tmp2 = tmp;
+	while (tmp2->next && tmp2->next->cmd[0] == '>')
 	{
-		if (execve (cmd->cmd, ppp, NULL) == -1)
-		{
-			if (execve (ft_strjoin("/bin/", cmd->cmd), ppp, NULL) == -1)
-			{
-				if (execve (ft_strjoin("/usr/bin/", cmd->cmd), ppp, NULL) == -1)
-				{
-					printf("\e[0;31mminishell: command not found\n");
-					exit (0);
-				}
-			}
-		}
-	}
-	close(file_d);
-	dup2(save_out, fileno(stdout));
-	wait(0);
-}
-
-void	my_exec_cmd(t_arg *cmd, int pi)
-{
-	static int current_pipe = -1;
-	if (pi == NOR || pi == PIPE ||pi == FPIPE ||pi == EPIPE)
-	{
-		if (pi != NOR)
-			current_pipe++;
-		if (!cmd->arg[1])
-			my_exec_cmd_a1(cmd, pi, current_pipe);
-		else if (!cmd->arg[2])
-			my_exec_cmd_b1(cmd, pi, current_pipe);
+		if (tmp2->next->cmd[1] == '>')
+			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR
+					| O_APPEND, 0644);
 		else
-			my_exec_cmd_c1(cmd, pi, current_pipe);
+			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR
+					| O_TRUNC, 0644);
+		close(file_d);
+		tmp2 = tmp2->next;
 	}
-	else if (pi == APND || pi == TRNC)
-	{
-		if (!cmd->arg[1])
-			my_exec_cmd_c2(cmd, pi);
-		else if (!cmd->arg[4])
-			my_exec_cmd_d1(cmd, pi);
-		else if (!cmd->arg[5])
-			my_exec_cmd_e1(cmd, pi);
-	}
-	// else
-	// {
-	// 	if (!cmd->arg[1])
-	// 		my_exec_cmd_a1(cmd);
-	// 	else if (!cmd->arg[2])
-	// 		my_exec_cmd_b1(cmd, pi);
-	// 	else
-	// 		my_exec_cmd_c1(cmd);
-	// }
 }
 
+void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
+{
+	int			fd[2];
+	static 		int	s;
+	int			pid;
 
-	// 	
-	// 	save_out = dup(fileno(stdout));
-	// 	dup2(g_fd[1], 1);
-	// 	printf ("%s\n", pwd);
-	// 	close(g_fd[1]);
-	// 	dup2(save_out, fileno(stdout));
-	// }
+	pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+		if (tmp->next && tmp->next->cmd[0] == '|')
+			dup2(fd[1], 1);
+		else if (tmp->next && tmp->next->cmd[0] == '>')
+			file_d = redirect(tmp);
+		if (s > 0)
+		{
+			dup2(s, 0);
+			close(s);
+		}
+		close_file(file_d, fd);
+		all_cmd(tmp, export_list, env_list);
+	}
+	else
+	{
+		if (s > 0)
+			close(s);
+		s = dup(fd[0]);
+		close_file(file_d, fd);
+	}
+	if (tmp->next == NULL)
+		waitpid(pid, &g_ext_s, 0);
+}
 
+void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
+{
+	while (tmp)
+	{
+		if (tmp->cmd[0] == '|' || tmp->cmd[0] == '>')
+		{
+			tmp = tmp->next;
+		}
+		else if (!ft_strncmp(tmp->cmd, "exit\0", 5))
+			my_exit();
+		else
+		{
+			if (get_next_red(tmp) > 1)
+				multi_red(tmp);
+			execute1(tmp, export_list, env_list, file_d);
+			tmp = tmp->next;
+		}
+	}
+}
 
-//command 											1
-//command file_name									2
-//command flag										2
-//command flag file_name 							3
+void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
+{
+	int	file_d;
 
-//command redirecit file_name 						3	
-//command flag redirecit file_name 					 4
-//command flag file_name redirect file_name			5
+	file_d = 0;
+	if (!get_next_pip(tmp) && !ft_strncmp(tmp->cmd,
+			"export\0", 7) && tmp->arg[1])
+	{
+		my_export(export_list, env_list, tmp->arg[1]);
+		return ;
+	}
+	else if (!get_next_pip(tmp) && !ft_strncmp(tmp->cmd,
+			"unset\0", 6) && tmp->arg[1])
+	{
+		my_unset(tmp, export_list, env_list);
+		return ;
+	}
+	execute2(tmp, export_list, env_list, file_d);
+	while (wait(0) != -1 || errno != ECHILD)
+		tmp = NULL;
+}

@@ -3,129 +3,110 @@
 /*                                                        :::      ::::::::   */
 /*   cmds2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/14 04:51:59 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/05/26 16:43:39 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
-void	my_echo1(t_arg *cmd, int pi)
+void	print_epxport(t_list *export_list)
 {
-	int	file_d;
-	int	save_out;
-
-	save_out = 0;
-	file_d = 0;
-	if (pi == APND)
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_APPEND);
-	else
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_TRUNC);
-	save_out = dup(fileno(stdout));
-	dup2(file_d, 1);
-	ft_putendl_fd("", file_d);
-	dup2(save_out, fileno(stdout));
-	close(file_d);
-}
-
-void	my_echo2(t_arg *cmd, int pi)
-{
-	int	file_d;
-	int	save_out;
-	int	i;
-
-	save_out = 0;
-	file_d = 0;
-	if (pi == APND)
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_APPEND);
-	else
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_TRUNC);
-	save_out = dup(fileno(stdout));
-	dup2(file_d, 1);
-	{			
-		i = 1;
-		while (cmd->arg[i])
-		{
-			ft_putstr_fd(cmd->arg[i], file_d);
-			if (cmd->arg[i + 1])
-				ft_putstr_fd(" ", file_d);
-			i++;
-		}
-		ft_putstr_fd("\n", file_d);
-	}
-	dup2(save_out, fileno(stdout));
-	close(file_d);
-}
-
-void	my_echo3(t_arg *cmd, int pi)
-{
-	int	file_d;
-	int	save_out;
-	int	i;
-
-	save_out = 0;
-	file_d = 0;
-	if (pi == APND)
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_APPEND);
-	else
-		file_d = open(cmd->next->redfile, O_CREAT | O_RDWR | O_TRUNC);
-	save_out = dup(fileno(stdout));
-	dup2(file_d, 1);
-	i = 2;
-	while (cmd->arg[i])
+	while (export_list)
 	{
-		ft_putstr_fd(cmd->arg[i], file_d);
-		if (cmd->arg[i + 1])
-			ft_putstr_fd(" ", file_d);
-		i++;
+		if (export_list->content)
+			printf("declare -x %s\n", export_list->content);
+		export_list = export_list->next;
 	}
-	dup2(save_out, fileno(stdout));
-	close(file_d);
 }
 
-void	my_echo4(t_arg *cmd)
+int	export_empty(t_list *export_list, t_list *env_list, char *var)
 {
 	int	i;
 
-	if (!ft_strncmp(cmd->arg[1], "-n\0", 3))
+	i = 0;
+	while (var[++i])
 	{
-		i = 1;
-		while (cmd->arg[++i])
+		if (var[i] == '=' && var[i + 1] == '\0')
 		{
-			printf("%s", cmd->arg[i]);
-			if (cmd->arg[i + 1])
-				printf(" ");
+			ft_lstadd_back(&export_list, ft_lstnew(ft_strjoin(var, "\"\"")));
+			ft_lstadd_back(&env_list, ft_lstnew(ft_strjoin(var, "\"\"")));
+			return (0);
 		}
+		else if (!var[i + 1])
+			ft_lstadd_back(&export_list, ft_lstnew(var));
 	}
-	else
+	return (1);
+}
+
+void	my_export(t_list *export_list, t_list *env_list, char *var)
+{
+	int	i;
+
+	i = 0;
+	if (var)
 	{
-		i = 0;
-		while (cmd->arg[++i])
+		if (var[0] == '=')
 		{
-			printf("%s", cmd->arg[i]);
-			if (cmd->arg[i + 1])
-				printf(" ");
+			printf("\e[0;31mnot a valid identifier\n");
+			return ;
 		}
-		printf("\n");
+		if (!export_empty(export_list, env_list, var))
+			return ;
+		while (var[++i])
+		{
+			if (var[i] == '=' && var[i - 1] != ' '
+				&& var[i + 1] != ' ' && var[i + 1] != '\0')
+			{
+				ft_lstadd_back(&env_list, ft_lstnew(var));
+				return ;
+			}
+		}
+		return ;
+	}
+	print_epxport(export_list);
+}
+
+void	unset_export(t_arg *cmd, t_list *export_list)
+{
+	t_list	*tmp;
+
+	tmp = export_list;
+	while (tmp)
+	{
+		if (!ft_strncmp(cmd->arg[1], tmp->content, ft_strlen(cmd->arg[1]))
+			&& (!ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "=", 1)
+				|| !ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "\0", 1)))
+		{
+			export_list->next = tmp->next;
+			free(tmp);
+			tmp = NULL;
+			break ;
+		}
+		export_list = tmp;
+		tmp = tmp->next;
 	}
 }
 
-void	my_echo(t_arg *cmd, int pi)
+void	my_unset(t_arg *cmd, t_list *export_list, t_list *env_list)
 {
-	if (pi == NOR)
-		my_echo4(cmd);
-	else if (pi == APND || pi == TRNC)
+	t_list	*tmp;
+
+	tmp = env_list;
+	while (tmp)
 	{
-		if (!cmd->arg[1])
-			my_echo1(cmd, pi);
-		else
+		if (!ft_strncmp(cmd->arg[1], tmp->content, ft_strlen(cmd->arg[1]))
+			&& !ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "=", 1))
 		{
-			if (!ft_strncmp(cmd->arg[1], "-n\0", 3))
-				my_echo3(cmd, pi);
-			else
-				my_echo2(cmd, pi);
+			env_list->next = tmp->next;
+			free(tmp);
+			tmp = NULL;
+			break ;
 		}
+		env_list = tmp;
+		tmp = tmp->next;
 	}
-	// else if (pi == PIPE)
+	unset_export(cmd, export_list);
 }
