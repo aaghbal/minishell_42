@@ -71,12 +71,15 @@ void	ft_argadd_back(t_arg **lst, t_arg *new)
 
 void	append_word(t_token **tmp, t_arg **arg)
 {
+		t_arg *tmp2;
 		while ((*tmp) && (*tmp)->type == tokenword)
 		{
-			ft_arglast(*arg)->arg = alloc_arg(ft_arglast(*arg)->arg, (*tmp)->cmd);
+			tmp2 = ft_arglast(*arg);
+			tmp2->arg = alloc_arg(tmp2->arg, (*tmp)->cmd);
 			(*tmp) = (*tmp)->next;
 		}
 }
+
 void	apend_redirection(t_token **tmp, t_arg **arg)
 {
 	t_arg *red = newarg_token((*tmp)->cmd, (*tmp)->type);

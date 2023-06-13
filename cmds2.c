@@ -9,7 +9,6 @@
 /*   Updated: 2023/05/26 16:43:39 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 void	print_epxport(t_list *export_list)

@@ -9,13 +9,15 @@
 /*   Updated: 2023/05/26 16:44:11 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
-
 
 void	my_cd(t_arg *cmd)
 {
-	chdir(cmd->arg[1]);
+	if (chdir(cmd->arg[1]) == -1)
+	{
+		printf ("cd: not a directory\n");
+		g_ext_s = 1;
+	}
 }
 
 void	my_env(t_list *env_list)
@@ -36,9 +38,13 @@ void	my_pwd(void)
 	printf ("%s\n", pwd);
 }
 
-void	my_exit(void)
+void	my_exit(t_arg *cmd)
 {
-	exit (printf("exit\n"));
+	printf("exit\n"); 
+	if (cmd->arg[1])
+		exit (ft_atoi(cmd->arg[1]));
+	else
+		exit (0);
 }
 
 void	my_echo(t_arg *cmd)
@@ -50,7 +56,10 @@ void	my_echo(t_arg *cmd)
 		i = 1;
 		while (cmd->arg[++i])
 		{
-			printf("%s", cmd->arg[i]);
+			if (!ft_strncmp(cmd->arg[i], "$?", 3))
+				printf("%d", g_ext_s);
+			else
+				printf("%s", cmd->arg[i]);
 			if (cmd->arg[i + 1])
 				printf(" ");
 		}
@@ -60,10 +69,14 @@ void	my_echo(t_arg *cmd)
 		i = 0;
 		while (cmd->arg[++i])
 		{
-			printf("%s", cmd->arg[i]);
+			if (!ft_strncmp(cmd->arg[i], "$?", 3))
+				printf("%d", g_ext_s);
+			else
+				printf("%s", cmd->arg[i]);
 			if (cmd->arg[i + 1])
 				printf(" ");
 		}
 		printf("\n");
 	}
+	g_ext_s = 0;
 }

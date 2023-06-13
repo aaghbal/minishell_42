@@ -9,7 +9,6 @@
 /*   Updated: 2023/05/26 13:02:27 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 void	add_free(t_data *data, t_token **token)
@@ -33,7 +32,6 @@ int	get_next_pip(t_arg *arg)
 	return(c);
 }
 
-
 int	get_next_red(t_arg *arg)
 {
 	int c;
@@ -41,7 +39,7 @@ int	get_next_red(t_arg *arg)
 	c = 0;
 	while (arg)
 	{
-		if (arg->cmd[0] == '>' || arg->cmd[0] == '<')
+		if (arg->cmd[0] == '>')
 			c++;
 		arg = arg->next;
 	}

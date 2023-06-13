@@ -6,11 +6,12 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 18:33:00 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/05/26 20:27:04 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/13 13:42:54 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 int	get_next_quotes(char *line, int n, int i)
 {
 	char c;
@@ -37,10 +38,6 @@ char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 	i = 0;
 	c = 0;
 	j = ++(*len);
-	// if (line[j] == '?' || line[j] == 0)
-	// {
-	// 	str = ft_strjoin(str, t);
-	// }
 	while (ft_isalpha(line[j]) == 1 || ft_isdigit(line[j]) ==  1)
 		j++;
 	tmp = malloc(sizeof(char) * (j - (*len)) + 1);
@@ -50,7 +47,7 @@ char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])) == 0)
+		if (!ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen(tmp))
 			str = ft_strjoin(str, tmp2[1]);
 		free_tabb(tmp2);
 		expo = expo->next;
@@ -122,7 +119,7 @@ void	default_cmd(t_data *data, char *line, t_list *expo)
 	{
 		if (line[data->i] == '$' && ft_isalpha(line[data->i + 1]))
 			data->str = ft_expand(line, &data->i,data->str, expo);
-		if (line[(data->i)] != '\"' && line[data->i] != '\'')
+		if (line[(data->i)] != '\"' && line[data->i] != '\'' && line[(data->i)])
 			data->str = append_char(data->str, line[(data->i)++]);
 		else
 		{

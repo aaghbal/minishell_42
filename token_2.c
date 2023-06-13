@@ -6,13 +6,11 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:10:02 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/05/26 18:29:55 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/13 13:36:46 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
 
 t_token * new_token(char *cmd, t_type type)
 {
@@ -94,73 +92,3 @@ int  token_line(char *line, t_list *export_list, t_list *env_list)
 	execute(arg, export_list, env_list);
 	return(0);
 }
-
-	// while (arg)
-	// {
-
-	// }
-	
-	// // while(arg->next)
-	// {
-	// 	if(arg->cmd[0] == '|')
-	// 		num_pipes++;
-	// 	arg = arg->next;
-	// }
-	// arg = tmp;
-	// while(arg)
-	// {
-	// 	if (arg->cmd[0] == '>' || arg->cmd[0] == '|')
-	// 		arg = arg->next;
-	// 	else if (arg->next && arg->next->arg[0][0] == '|')
-	// 	{
-	// 		//only redirect output to fd[1]
-	// 		arg->t_pipes = num_pipes;
-	// 		while (num_pipes >= 0)
-	// 		{
-	// 			pipe(g_fd[num_pipes]);
-	// 			num_pipes--;
-	// 		}
-	// 		all_cmd(arg, export_list, env_list, FPIPE);
-	// 		arg = arg->next;
-	// 		while (arg)
-	// 		{
-	// 			if (arg->next)
-	// 				arg->next->t_pipes = arg->t_pipes;
-	// 			if (arg->cmd[0] == '|' || arg->cmd[0] == '>')
-	// 				arg = arg->next;
-	// 			else if (arg->next && arg->next->arg[0][0] == '>')
-	// 			{
-	// 				if (arg->next->arg[0][1] == '\0')
-	// 					all_cmd(arg, export_list, env_list, TRNC);
-	// 				else
-	// 					all_cmd(arg, export_list, env_list, APND);
-	// 				arg = arg->next;
-	// 			}
-	// 			else if (!arg->next)
-	// 			{
-	// 				//read from fd[0] and output normaly
-	// 				all_cmd(arg, export_list, env_list, EEPIPE);
-	// 				arg = arg->next;
-	// 			}
-	// 			else
-	// 			{
-	// 				//redirect output to stdin and read from fd[0]
-	// 				all_cmd(arg, export_list, env_list, PIPE);
-	// 				arg = arg->next;
-	// 			}
-	// 		}
-	// 	}
-	// 	else if (arg->next && arg->next->arg[0][0] == '>')
-	// 	{
-	// 		if (arg->next->arg[0][1] == '\0')
-	// 			all_cmd(arg, export_list, env_list, TRNC);
-	// 		else
-	// 			all_cmd(arg, export_list, env_list, APND);
-	// 		arg = arg->next;
-	// 	}
-	// 	else
-	// 	{
-	// 		all_cmd(arg, export_list, env_list, NOR);
-	// 		arg = arg->next;
-	// 	}
-	// }

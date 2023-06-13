@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/26 20:27:23 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/13 12:32:07 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 # include <string.h>
 # include <sys/errno.h>
 
-
 # define NOR 0
 # define PIPE 1
 # define FPIPE 2
@@ -42,8 +41,7 @@
 # define APND 4
 # define TRNC 5
 
-
-int g_ext_s;
+int	g_ext_s;
 
 typedef enum type{
 	tokenword,
@@ -76,8 +74,8 @@ typedef struct s_data
 /*---commands---*/
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
-void	my_pwd(void);
-void	my_exit(void);
+void	my_pwd();
+void	my_exit(t_arg *cmd);
 void	my_cd(t_arg *cmd);
 void	my_unset(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_exec_cmd(t_arg *cmd, int pi);
@@ -95,6 +93,9 @@ void	my_echo3(t_arg *cmd, int pi);
 void	my_echo4(t_arg *cmd);
 void	my_env(t_list *env_list);
 int		redirect(t_arg *tmp);
+void	redirect1(t_arg *tmp);
+void	doc_handler(int signal);
+void	fhere_doc(t_arg *tmp);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -128,11 +129,14 @@ int		check_token(char c);
 int		is_char(char c);
 int		ft_parsing_2(t_token **token);
 int		ft_parsing(char *tmp);
-char	*ft_expand(char *line, int *len, char *str,  t_list *expo);
+char	*ft_expand(char *line, int *len, char *str, t_list *expo);
 int		get_next_pip(t_arg *arg);
 int		get_next_red(t_arg *arg);
 int		is_char(char c);
 int		is_char(char c);
 char	*get_token_pars(char *line);
+int		check_line_2(char *str);
+int		check_line(char *str);
+int		parsing(char *str);
 
 #endif
