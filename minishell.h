@@ -33,7 +33,7 @@
 # include "libft/libft.h"
 # include <string.h>
 # include <sys/errno.h>
-# include <paths.h> // _PATH_STDPATH
+# include <paths.h>
 
 // # define NOR 0
 // # define APND 4
@@ -87,13 +87,14 @@ void	my_exec_cmd_e1(t_arg *cmd, int pi);
 void	my_echo(t_arg *cmd);
 void	my_env(t_list *env_list);
 int		redirect(t_arg *tmp);
-void	here_doc(t_arg *tmp, t_list *export_list, t_list *env_list, int fd[2], int s);
+int		here_doc(t_arg *tmp, int fd[2]);
 void	doc_handler(int signal);
 void	unset_export(char *cmd, t_list *export_list);
 void	close_file(int file_d, int fd[2]);
 int		reset(int pid);
 int		parent(int file_d, int s, int fd[2]);
 int		hered_check(t_arg *tmp);
+int		redirect_inpt(t_arg *tmp);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -111,7 +112,7 @@ void	is_token(t_data *data, char *line);
 void	default_cmd(t_data *data, char *line, t_list *expo);
 void	free_tabb(char **tabb);
 void	is_arg(t_token *tmp, t_arg **arg);
-void	free_list(t_token *tabb); // TODO: Fix incompatible pointer types [Warning]
+void	free_list(t_token *tabb);
 void	append_word(t_token **tmp, t_arg **arg);
 void	apend_redirection(t_token **tmp, t_arg **arg);
 char	**alloc_arg(char **args, char *cmd);
@@ -136,6 +137,5 @@ char	*get_token_pars(char *line);
 int		check_line_2(char *str);
 int		check_line(char *str);
 int		parsing(char *str);
- void	free_arg(t_arg *tabb);
 
 #endif

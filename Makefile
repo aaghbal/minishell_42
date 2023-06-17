@@ -12,7 +12,10 @@
 
 NAME = minishell
 
-SRC = minishell.c cmds.c execute_utils.c execute.c redirect.c echo.c here_doc.c export.c unset.c arg.c parsing_2.c parsing.c token_2.c token.c utils.c signals.c doc_signal.c
+SRC = minishell.c cmds.c execute_utils.c execute.c \
+	 redirect.c echo.c here_doc.c export.c unset.c \
+	 arg.c parsing_2.c parsing.c token_2.c token.c \
+	 utils.c signals.c doc_signal.c
 OBJ = ${SRC:.c=.o}
 
 libfta = ./libft/libft.a
@@ -21,7 +24,7 @@ CC = cc
 
 RM = rm -f
 
-CFLAGS = -Wall -Wextra -I $(shell brew --prefix readline)/include
+CFLAGS = -Wall -Wextra  -I $(shell brew --prefix readline)/include
 
 all: libftm ${NAME}
 

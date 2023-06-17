@@ -16,24 +16,31 @@ int	redirect(t_arg *tmp)
 	int	file_d;
 
 	if (tmp->next->cmd[1] == '\0')
-		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_TRUNC, 0777);
+		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	else
-		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_APPEND, 0777);
-	dup2(file_d, 1);
+		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_APPEND, 0644);
+	dup2(file_d, STDOUT_FILENO);
 	return (file_d);
 }
 
-// int	redirect_hered(t_arg *tmp)
-// {
-// 	int	file_d;
+int	redirect_inpt(t_arg *tmp)
+{
+	int	file_d;
 
-// 	if (tmp->next->cmd[1] == '\0')
-// 		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_TRUNC, 0777);
-// 	else
-// 		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_APPEND, 0777);
-// 	dup2(file_d, 1);
-// 	return (file_d);
-// }
+	if (!access(tmp->next->redfile, R_OK))
+		file_d = open(tmp->next->redfile, O_RDONLY);
+	else
+		return (-1);
+	dup2(file_d, STDIN_FILENO);
+	while (tmp->next)
+	{
+		if (!access(tmp->next->redfile, R_OK));
+		else
+			return (-1);
+		tmp = tmp->next;
+	}
+	return (file_d);
+}
 
 int	parsing(char *str)
 {

@@ -135,11 +135,9 @@ void	ft_read(t_list	*export_list, t_list *env_list)
 void	create_env(t_list **env_list, t_list **export_list)
 {
 	static int i = 1;
-	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
-	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i++))));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));

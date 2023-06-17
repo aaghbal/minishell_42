@@ -32,7 +32,7 @@ void	my_echo(t_arg *cmd)
 {
 	int	i;
 
-	if (!ft_strncmp(cmd->arg[1], "-n\0", 3))
+	if (!ft_strncmp(cmd->arg[1], "-n", 3))
 	{
 		i = 1;
 		while (cmd->arg[++i])

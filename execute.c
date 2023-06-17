@@ -39,6 +39,21 @@ void	multi_red(t_arg *tmp)
 	}
 }
 
+void	multi_inptred(t_arg *tmp)
+{
+	t_arg	*tmp2;
+	int		file_d;
+
+	file_d = 0;
+	tmp2 = tmp;
+	while (tmp2->next && !ft_strncmp(tmp->next->cmd, "<", 2))
+	{
+		file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+		close(file_d);
+		tmp2 = tmp2->next;
+	}
+}
+
 void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 {
 	int			fd[2];
@@ -53,31 +68,42 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 	{
 		if (hered_check(tmp))
 		{
-			here_doc(tmp, export_list, env_list, fd2, s);
+			file_d = here_doc(tmp, fd2);
 			if (get_next_pip(tmp))
-			{
-				dup2(fd[1], 1);
-				close_file(file_d, fd);
-			}
-			dup2(fd2[0], 0);
+				dup2(fd[1], STDOUT_FILENO);
+			dup2(fd2[0], STDIN_FILENO);
 			close_file(file_d, fd2);
 			close_file(file_d, fd);
 			if (tmp->cmd[0] != '<')
+			{
 				all_cmd(tmp, export_list, env_list);
+			}
 			else
 				exit (0);
 		}
 		if (tmp && tmp->next && tmp->next->cmd[0] == '|')
-			dup2(fd[1], 1);
+			dup2(fd[1], STDOUT_FILENO);
 		else if ((tmp && tmp->next && tmp->next->cmd[0] == '>'))
 			file_d = redirect(tmp);
+		else if ((tmp && tmp->next && tmp->next->cmd[0] == '<'))
+		{
+			file_d = redirect_inpt(tmp);
+			if (file_d == -1)
+			{
+				printf ("minishell: %s: No such file or directory\n", tmp->next->redfile);
+				close_file(file_d, fd2);
+				close_file(file_d, fd);
+				exit(1);
+			}
+			s = 0;
+		}
 		if (s)
 		{
-			dup2(s, 0);
+			dup2(s, STDIN_FILENO);
 			close(s);
 		}
-		close_file(file_d, fd);
 		close_file(file_d, fd2);
+		close_file(file_d, fd);
 		all_cmd(tmp, export_list, env_list);
 	}
 	else
@@ -99,6 +125,7 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 	}
 	while (tmp)
 	{
+
 		if (tmp && tmp->cmd[0] == '|')
 		{
 			if (tmp->next->cmd[0] == '>')
@@ -109,7 +136,7 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 			}
 			tmp = tmp->next;
 		}
-		else if (tmp && tmp->cmd[0] == '>')
+		else if (tmp && (tmp->cmd[0] == '>' || !ft_strncmp(tmp->cmd, "<", 2)))
 			tmp = tmp->next;
 		else if (tmp && !ft_strncmp(tmp->cmd, "exit", 5))
 			my_exit(tmp);
@@ -117,10 +144,12 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 		{
 			if (tmp && get_next_red(tmp) > 1) // ??? | >
 				multi_red(tmp);
+			if (tmp && get_next_red(tmp) > 1) // ??? | >
+				multi_red(tmp);
 			execute1(tmp, export_list, env_list, file_d);
 			if (hered_check(tmp))
 			{
-				wait (0);
+				wait(0);
 				while (tmp)
 				{
 					if (tmp->cmd[0] == '|')
@@ -135,7 +164,6 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 				tmp = tmp->next;
 		}
 	}
-	free_list(tmp); //TODO: Fix incompatible pointer types [Warning]
 }
 
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
@@ -144,13 +172,13 @@ void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
 
 	file_d = 0;
 	if (!get_next_pip(tmp) && !ft_strncmp(tmp->cmd,
-			"export\0", 7) && tmp->arg[1])
+			"export", 7) && tmp->arg[1])
 	{
 		my_export(export_list, env_list, tmp->arg[1]);
 		return ;
 	}
 	else if (!get_next_pip(tmp) && !ft_strncmp(tmp->cmd,
-			"unset\0", 6) && tmp->arg[1])
+			"unset", 6) && tmp->arg[1])
 	{
 		my_unset(tmp->arg[1], export_list, env_list);
 		return ;
