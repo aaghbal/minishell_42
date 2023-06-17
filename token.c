@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-
 char *append_char(char *str, char c)
 {
 	char *res;

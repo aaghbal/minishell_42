@@ -85,6 +85,8 @@ int	ft_parsing_2(t_token **token)
 	}
 	while (tmp)
 	{
+		if (!ft_strncmp(tmp->cmd, "|", 1) && !ft_strncmp(tmp->next->cmd, "|", 1))
+			return (1);
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
 			return (1);
 		c = 0;

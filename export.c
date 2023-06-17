@@ -1,22 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmds2.c                                            :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/26 16:43:39 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/14 08:09:04 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
 
 void	print_epxport(t_list *export_list)
 {
+	char	*tmp;
+	char	**tmp2;
+	int		i;
+
 	while (export_list)
 	{
-		if (export_list->content)
-			printf("declare -x %s\n", export_list->content);
+		printf("declare -x ");
+		tmp = ft_strdup(export_list->content);
+		i = -1;
+		while (tmp[++i])
+		{
+			if (tmp[i] == '=')
+			{
+				tmp2 = ft_split(export_list->content, '=');
+				if (tmp2[1])
+					printf("=\"%s\"", tmp2[1]);
+				else
+					printf("=\"\"");
+				break ;
+			}
+			printf("%c", tmp[i]);
+		}
+		printf("\n");
 		export_list = export_list->next;
 	}
 }
@@ -30,8 +49,8 @@ int	export_empty(t_list *export_list, t_list *env_list, char *var)
 	{
 		if (var[i] == '=' && var[i + 1] == '\0')
 		{
-			ft_lstadd_back(&export_list, ft_lstnew(ft_strjoin(var, "\"\"")));
-			ft_lstadd_back(&env_list, ft_lstnew(ft_strjoin(var, "\"\"")));
+			ft_lstadd_back(&export_list, ft_lstnew(var));
+			ft_lstadd_back(&env_list, ft_lstnew(var));
 			return (0);
 		}
 		else if (!var[i + 1])
@@ -40,16 +59,41 @@ int	export_empty(t_list *export_list, t_list *env_list, char *var)
 	return (1);
 }
 
+void	same_var(t_list *export_list, t_list *env_list, char *var)
+{
+	t_list	*tmp;
+	char	**tmp2;
+	char	**tmp3;
+
+	tmp = export_list;
+	tmp3 = ft_split(var, '=');
+	while (tmp)
+	{
+		tmp2 = ft_split(tmp->content, '=');
+		if (!ft_strncmp(tmp2[0], tmp3[0], ft_strlen(tmp3[0]))
+			&& ft_strlen(tmp3[0]) == ft_strlen(tmp2[0]))
+		{
+			my_unset(tmp2[0], export_list, env_list);
+			free(tmp2);
+			break ;
+		}
+		free(tmp2);
+		tmp = tmp->next;
+	}
+	free(tmp3);
+}
+
 void	my_export(t_list *export_list, t_list *env_list, char *var)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	if (var)
 	{
-		if (var[0] == '=')
+		same_var(export_list, env_list, var);
+		if (!ft_isalpha(var[0]))
 		{
-			printf("\e[0;31mnot a valid identifier\n");
+			printf("\e[0;31mminishell: export: not a valid identifier\n");
 			return ;
 		}
 		if (!export_empty(export_list, env_list, var))
@@ -66,46 +110,4 @@ void	my_export(t_list *export_list, t_list *env_list, char *var)
 		return ;
 	}
 	print_epxport(export_list);
-}
-
-void	unset_export(t_arg *cmd, t_list *export_list)
-{
-	t_list	*tmp;
-
-	tmp = export_list;
-	while (tmp)
-	{
-		if (!ft_strncmp(cmd->arg[1], tmp->content, ft_strlen(cmd->arg[1]))
-			&& (!ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "=", 1)
-				|| !ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "\0", 1)))
-		{
-			export_list->next = tmp->next;
-			free(tmp);
-			tmp = NULL;
-			break ;
-		}
-		export_list = tmp;
-		tmp = tmp->next;
-	}
-}
-
-void	my_unset(t_arg *cmd, t_list *export_list, t_list *env_list)
-{
-	t_list	*tmp;
-
-	tmp = env_list;
-	while (tmp)
-	{
-		if (!ft_strncmp(cmd->arg[1], tmp->content, ft_strlen(cmd->arg[1]))
-			&& !ft_strncmp(tmp->content + ft_strlen(cmd->arg[1]), "=", 1))
-		{
-			env_list->next = tmp->next;
-			free(tmp);
-			tmp = NULL;
-			break ;
-		}
-		env_list = tmp;
-		tmp = tmp->next;
-	}
-	unset_export(cmd, export_list);
 }

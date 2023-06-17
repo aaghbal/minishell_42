@@ -9,8 +9,7 @@
 /*   Updated: 2023/05/14 13:32:28 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "minishell.h" 
+#include "minishell.h"
 
 char **alloc_arg(char **args, char *cmd)
 {
@@ -19,6 +18,8 @@ char **alloc_arg(char **args, char *cmd)
 
 	while (args && args[i++]);
 	new = malloc(sizeof(char *) * (i + 2));
+	if (!new)
+		return (NULL);
 	i = 0;
 	while (args && args[i])
 	{
@@ -45,6 +46,8 @@ t_arg * newarg_token(char *cmd, t_type type)
 	t_arg *node;
 
 	node = (t_arg *)malloc(sizeof(t_arg));
+	if (!node)
+		return(NULL);
 	node->cmd = ft_strdup(cmd);
 	node->arg = alloc_arg(NULL, cmd);
 	node->type = type;
@@ -84,12 +87,15 @@ void	apend_redirection(t_token **tmp, t_arg **arg)
 {
 	t_arg *red = newarg_token((*tmp)->cmd, (*tmp)->type);
 	(*tmp) = (*tmp)->next;
-	if ((tmp))
+	if ((*tmp))
+	{
+
 		red->redfile = ft_strdup((*tmp)->cmd);
-	if ((tmp))
+	}
+	if ((*tmp))
 	{
 		(*tmp) = (*tmp)->next;
-		append_word(tmp, arg);	
+		append_word(tmp, arg);
 	}
 	if (*tmp && (*tmp)->type == redirections)
 		apend_redirection(tmp, arg);
@@ -103,9 +109,13 @@ void	is_arg(t_token *tmp, t_arg **arg)
 	{
 		if (tmp->type == tokenword)
 		{
-			ft_argadd_back(arg, newarg_token((tmp)->cmd, (tmp)->type));
-			(tmp) = (tmp)->next;
-			append_word(&tmp, arg);
+			if (tmp && tmp->type == tokenword)
+			{
+
+				ft_argadd_back(arg, newarg_token((tmp)->cmd, (tmp)->type));
+				(tmp) = (tmp)->next;
+				append_word(&tmp, arg);
+			}
 			if (tmp && tmp->type == redirections)
 				apend_redirection(&tmp, arg);
 		}
@@ -131,6 +141,18 @@ void	is_arg(t_token *tmp, t_arg **arg)
 }
 
  void	free_list(t_token *tabb)
+{
+	int	i;
+
+	i = 0;
+	while (tabb)
+	{
+		free(tabb);
+		tabb = tabb->next;
+	}
+	free(tabb);
+}
+ void	free_arg(t_arg *tabb)
 {
 	int	i;
 

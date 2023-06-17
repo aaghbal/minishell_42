@@ -9,41 +9,67 @@
 /*   Updated: 2023/06/13 13:48:26 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
-void	ft_exu_other(t_arg *cmd, t_list *export_list)
+char **list_to_tabs(t_list *list)
 {
-	char **str;
-	int i;
+	char **tabs;
+
+	tabs = (char **)malloc((ft_lstsize(list) + 1) * sizeof(char *));
+
+	t_list *tmp = list;
+	int i =0;
+	while (tmp)
+	{
+		tabs[i] = ft_strdup(tmp->content);
+		i++;
+		tmp = tmp->next;
+	}
+	tabs[i] = NULL;
+	return tabs;
+}
+
+void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
+{
+	char	**str;
+	char	**env;
+	int		i;
 
 	i = 0;
+	str = NULL;
 	while (export_list)
 	{
 		if (!ft_strncmp(export_list->content, "PATH", 4))
-			break;
+			break ;
 		export_list = export_list->next;
 	}
-	str = ft_split(export_list->content, '=');
-	str = ft_split(str[1], ':');
-	while (str[i])
+	if (export_list && !ft_strncmp(export_list->content, "PATH", 4))
+	{
+		str = ft_split(export_list->content, '=');
+		str = ft_split(str[1], ':');
+	}
+	while (str && str[i])
 	{
 		str[i] = ft_strjoin(str[i], "/");
 		i++;
 	}
-	i = 0;	
-	while (str[i])
+	i = 0;
+	env = list_to_tabs(list_env);
+	execve(cmd->cmd, cmd->arg, env);
+	while (str && str[i])
 	{
-		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, NULL) == -1)
+		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, env) == -1)
 			i++;
 	}
-	printf("\e[0;31mminishell: command not found\n");
-
+	printf("\e[0;31mminishell: cmmand not found\n");
+	exit (127);
 }
 
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 {
-	if (!ft_strncmp(cmd->cmd, "pwd", 4))
+	if (!ft_strncmp(cmd->cmd, "\t", 3))
+		exit (0);
+	else if (!ft_strncmp(cmd->cmd, "pwd", 4))
 		my_pwd();
 	else if (!ft_strncmp(cmd->cmd, "exit", 5))
 		my_exit(cmd);
@@ -56,9 +82,9 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	else if (!ft_strncmp(cmd->cmd, "export", 6))
 		my_export(export_list, env_list, cmd->arg[1]);
 	else if (!ft_strncmp(cmd->cmd, "unset", 6))
-		my_unset(cmd, export_list, env_list);
+		my_unset(cmd->arg[1], export_list, env_list);
 	else
-		ft_exu_other(cmd ,export_list);
+		ft_exu_other(cmd, export_list, env_list);
 	exit (0);
 }
 
@@ -70,21 +96,6 @@ int	check_line(char *str)
 	while (str[i])
 	{
 		if (str[i] != ' ' && str[i] != '\t')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int	check_line_2(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ' && str[i] != '\"'
-			&& str[i] != '\'' && str[i] != '\t')
 			return (0);
 		i++;
 	}
@@ -106,6 +117,8 @@ void	ft_read(t_list	*export_list, t_list *env_list)
 		if (str)
 		{
 			tmp = malloc(sizeof(char) * ft_strlen(str) + 1);
+			if (!tmp)
+				return ;
 			ft_strlcpy(tmp, str, ft_strlen(str) + 1);
 			if (ft_parsing(tmp) || token_line(str, export_list, env_list))
 			{
@@ -114,14 +127,43 @@ void	ft_read(t_list	*export_list, t_list *env_list)
 				continue ;
 			}
 			free(str);
+			free(tmp);
 		}
 	}
 }
 
+void	create_env(t_list **env_list, t_list **export_list)
+{
+	static int i = 1;
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i))));
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i++))));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
+}
+
+
+void	shelvl_env(t_list	*env_list, char **env , int *i)
+{
+	int		a;
+	char	*num;
+
+	num = ft_substr(env[*i], 6, ft_strlen(env[*i]));
+	a = ft_atoi(num);
+	if (a < 0)
+		a = -1;
+	a++;
+	ft_lstadd_back(&env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(a))));
+	free(num);
+}
+
 int	main(int ac, char **av, char *env[])
 {
-	t_list	*env_list;
-	t_list	*export_list;
+	t_list	*env_list = NULL;
+	t_list	*export_list = NULL;
 	char	*str;
 	int		i;
 
@@ -129,14 +171,30 @@ int	main(int ac, char **av, char *env[])
 	(void)ac;
 	str = NULL;
 	i = -1;
-	while (env[++i])
-		ft_lstadd_back(&env_list, ft_lstnew(env[i]));
-	i = -1;
-	while (env[++i])
-		ft_lstadd_back(&export_list, ft_lstnew(env[i]));
+	if (!env[0])
+		create_env(&env_list, &export_list);
+	else
+	{
+		while (env[++i])
+		{
+			if (ft_strncmp(env[i], "SHLVL", 5) == 0)
+				shelvl_env(env_list, env, &i);
+			else
+				ft_lstadd_back(&env_list, ft_lstnew(env[i]));
+		}
+		i = -1;
+		while (env[++i])
+		{
+			if (ft_strncmp(env[i], "SHLVL", 5) == 0)
+				shelvl_env(export_list, env, &i);
+			else
+				ft_lstadd_back(&export_list, ft_lstnew(env[i]));
+		}
+	}
 	i = -1;
 	signal(2, sighandler);
 	signal(3, sighandler);
 	signal(11, sighandler);
 	ft_read(export_list, env_list);
+	system("leaks minishell");
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmds4.c                                            :+:      :+:    :+:   */
+/*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/26 16:44:48 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/14 08:10:29 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -22,6 +22,18 @@ int	redirect(t_arg *tmp)
 	dup2(file_d, 1);
 	return (file_d);
 }
+
+// int	redirect_hered(t_arg *tmp)
+// {
+// 	int	file_d;
+
+// 	if (tmp->next->cmd[1] == '\0')
+// 		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_TRUNC, 0777);
+// 	else
+// 		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_APPEND, 0777);
+// 	dup2(file_d, 1);
+// 	return (file_d);
+// }
 
 int	parsing(char *str)
 {

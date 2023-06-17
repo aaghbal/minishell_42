@@ -9,7 +9,6 @@
 /*   Updated: 2023/06/13 13:36:46 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 t_token * new_token(char *cmd, t_type type)
@@ -71,6 +70,35 @@ void	ft_tokenization(t_token	**token, t_data *data, t_list *export_list, char *l
 	}
 }
 
+int 	parsing_3(char *line)
+{
+	int i;
+	int	c;
+
+	i = 0;
+	c = 0;
+	while (line[i])
+	{
+		if (line[i] == '<' && line[i + 1] == '<')
+		{
+			i += 2;
+			while (line[i] == ' ' || line[i] == '\t')
+				i++;
+			if (line[i] == '\"' && line[i + 1] == '\"')
+			{
+				i += 2;
+				c++;
+				while (line[i] == ' ' || line[i] == '\t')
+					i++;
+				if ((line[i] == '|' || line[i] == '<' || line[i] == '>'))
+					c = 0;
+			}
+		}
+		i++;
+	}
+	return(c);
+}
+
 int  token_line(char *line, t_list *export_list, t_list *env_list)
 {
 	t_data *data;
@@ -83,12 +111,19 @@ int  token_line(char *line, t_list *export_list, t_list *env_list)
 	data->i = 0;
 	data->str = NULL;
 	ft_tokenization(&token, data, export_list, line);
-	if (ft_parsing_2(&token))
+	free(data);
+	// while (token)
+	// {
+	// 	printf("%s\n", token->cmd);
+	// 	token = token->next;
+	// }
+	if (ft_parsing_2(&token) && !parsing_3(line))
 	{
 		free_list(token);
 		return(1);
 	}
 	is_arg(token, &arg);
+	free_list(token);
 	execute(arg, export_list, env_list);
 	return(0);
 }
