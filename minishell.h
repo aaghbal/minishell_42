@@ -74,7 +74,7 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
 void	my_pwd(void);
 void	my_exit(t_arg *cmd);
-void	my_cd(t_arg *cmd);
+void	my_cd(t_arg *cmd, t_list **expo);
 void	my_unset(char *cmd, t_list *export_list, t_list *env_list);
 void	my_exec_cmd(t_arg *cmd, int pi);
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list);
@@ -95,6 +95,9 @@ int		reset(int pid);
 int		parent(int file_d, int s, int fd[2]);
 int		hered_check(t_arg *tmp);
 int		redirect_inpt(t_arg *tmp);
+int		get_next_inptred(t_arg *arg);
+char	*export_pars(t_list *export_list, char *var);
+char	*add_var(t_list *export_list, char *var);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -129,13 +132,15 @@ int		is_char(char c);
 int		ft_parsing_2(t_token **token);
 int		ft_parsing(char *tmp);
 char	*ft_expand(char *line, int *len, char *str, t_list *expo);
+void	print_epxport(t_list *export_list);
 int		get_next_pip(t_arg *arg);
 int		get_next_red(t_arg *arg);
 int		is_char(char c);
 int		is_char(char c);
-char	*get_token_pars(char *line);
+int		get_token_pars(char *line);
 int		check_line_2(char *str);
 int		check_line(char *str);
 int		parsing(char *str);
+ void	free_arg(t_arg *str);
 
 #endif

@@ -62,6 +62,7 @@ void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 			i++;
 	}
 	printf("\e[0;31mminishell: cmmand not found\n");
+	free_arg(cmd);
 	exit (127);
 }
 
@@ -76,7 +77,7 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	else if (!ft_strncmp(cmd->cmd, "echo", 5))
 		my_echo(cmd);
 	else if (!ft_strncmp(cmd->cmd, "cd", 3))
-		my_cd(cmd);
+		my_cd(cmd, &export_list);
 	else if (!ft_strncmp(cmd->cmd, "env", 4))
 		my_env(env_list);
 	else if (!ft_strncmp(cmd->cmd, "export", 6))
@@ -102,17 +103,22 @@ int	check_line(char *str)
 	return (1);
 }
 
-void	ft_read(t_list	*export_list, t_list *env_list)
+void	ft_read(t_list	**export_list, t_list *env_list)
 {
 	char	*tmp;
 	char	*str;
 
+	tmp = NULL;
 	while (1)
 	{
 		rl_catch_signals = 0;
 		str = readline("\e[0;32mminishell ➜ \e[m");
 		if (parsing(str))
+		{
+			free(str);
 			continue ;
+		}
+		signal(2, sighandler);
 		add_history(str);
 		if (str)
 		{
@@ -120,24 +126,24 @@ void	ft_read(t_list	*export_list, t_list *env_list)
 			if (!tmp)
 				return ;
 			ft_strlcpy(tmp, str, ft_strlen(str) + 1);
-			if (ft_parsing(tmp) || token_line(str, export_list, env_list))
+			if (ft_parsing(tmp) || token_line(str, *export_list, env_list))
 			{
 				printf("\e[0;31msyntax error\n");
 				g_ext_s = 258;
-				continue ;
 			}
-			free(str);
-			free(tmp);
 		}
+		system("leaks minishell");
 	}
 }
 
 void	create_env(t_list **env_list, t_list **export_list)
 {
 	static int i = 1;
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i++))));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
@@ -148,13 +154,15 @@ void	shelvl_env(t_list	*env_list, char **env , int *i)
 {
 	int		a;
 	char	*num;
-
+	char	*s;
 	num = ft_substr(env[*i], 6, ft_strlen(env[*i]));
 	a = ft_atoi(num);
 	if (a < 0)
 		a = -1;
 	a++;
-	ft_lstadd_back(&env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(a))));
+	s = ft_itoa(a);
+	ft_lstadd_back(&env_list, ft_lstnew(ft_strjoin("SHLVL=", s)));
+	free(s);
 	free(num);
 }
 
@@ -189,10 +197,8 @@ int	main(int ac, char **av, char *env[])
 				ft_lstadd_back(&export_list, ft_lstnew(env[i]));
 		}
 	}
-	i = -1;
-	signal(2, sighandler);
-	signal(3, sighandler);
+	signal(3, sighandler);     
 	signal(11, sighandler);
-	ft_read(export_list, env_list);
-	system("leaks minishell");
+	ft_read(&export_list, env_list);
+	
 }

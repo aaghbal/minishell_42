@@ -25,8 +25,8 @@ char *append_char(char *str, char c)
 	{
 		tmp[0] = c;
 		tmp[1] = '\0';
-		res = malloc(sizeof(char) * ft_strlen(str) + 2);
 		res = ft_strjoin(str, tmp);
+		free(str);
 	}
 	return res;
 }

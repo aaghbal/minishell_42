@@ -127,7 +127,6 @@ void	default_cmd(t_data *data, char *line, t_list *expo)
 				data->str = double_quotes(line, data->str, &(data->i), expo);
 			else if (line[data->i] == '\'')
 				data->str = single_quotes(line, data->str, &(data->i));
-
 		}
 	}
 }

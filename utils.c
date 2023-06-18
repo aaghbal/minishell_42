@@ -46,6 +46,20 @@ int	get_next_red(t_arg *arg)
 	return(c);
 }
 
+int	get_next_inptred(t_arg *arg)
+{
+	int c;
+
+	c = 0;
+	while (arg)
+	{
+		if (arg->cmd[0] == '<')
+			c++;
+		arg = arg->next;
+	}
+	return(c);
+}
+
 int is_char(char c)
 {
 	if (c == ' ' || c == '\t' || check_token(c))

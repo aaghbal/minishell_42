@@ -15,12 +15,12 @@ t_token * new_token(char *cmd, t_type type)
 {
 	t_token * node;
 
-	if (type == NONE)
-		return (NULL);
 	node = (t_token *)malloc(sizeof(t_token));
 	if (node == NULL)
 		return (NULL);
 	node->cmd = ft_strdup(cmd);
+	if (type == NONE)
+		return (NULL);
 	node->type = type;
 	node->next = NULL;
 	return (node);
@@ -47,8 +47,8 @@ char *get_token(char *line)
 void	is_token(t_data *data, char *line)
 {
 	data->str = get_token(&line[(data->i)++]);
-		if (ft_strlen(data->str) == 2)
-			(data->i)++;
+	if (ft_strlen(data->str) == 2)
+		(data->i)++;
 }
 
 void	ft_tokenization(t_token	**token, t_data *data, t_list *export_list, char *line)
@@ -119,9 +119,15 @@ int  token_line(char *line, t_list *export_list, t_list *env_list)
 	if (ft_parsing_2(&token) && !parsing_3(line))
 	{
 		free_list(token);
+
+		free(data);
 		return(1);
 	}
 	is_arg(token, &arg);
+	free_list(token);
+	free(line);
+	free(data);
 	execute(arg, export_list, env_list);
+	free_arg(arg);
 	return(0);
 }

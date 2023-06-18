@@ -39,20 +39,20 @@ int	check_quotes(char *tmp, int *i)
 	return (0);
 }
 
-char *get_token_pars(char *line)
+int get_token_pars(char *line)
 {
 	int i;
 	
 	if (!line)
-		return (NULL);
+		return (0);
 	i = 0;
 	if (line[i] && (line[i] == '<' || line[i] == '>') 
 		&& (line[i + 1] != '<' && line[i + 1] != '>'))
-		return ft_substr(line, 0, 1);
+		return (1);
 	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<')
 	|| (line[i] == '>' && line[i + 1] == '>')))
-		return ft_substr(line, 0, 2);
-	return NULL;
+		return (1);
+	return 0;
 }
 
 int ft_parsing(char *tmp)
@@ -64,9 +64,13 @@ int ft_parsing(char *tmp)
 	{
 		if (tmp[i] == '\"' || tmp[i] == '\'')
 			if (check_quotes(tmp, &i))
+			{
+				free(tmp);
 				return(1);
+			}
 		i++;
 	}
+	free(tmp);
 	return (0);
 }
 
@@ -74,19 +78,24 @@ int	ft_parsing_2(t_token **token)
 {
 	t_token *tmp;
 	t_token *tmp1;
+	t_token *tmp2;
 
 	tmp = *token;
 	tmp1 = *token;
+	tmp2 = ft_tokenlast(tmp1);
 	int c = 1;
 	if (tmp1->cmd != NULL)
 	{
-		if (get_token(ft_tokenlast(tmp1)->cmd))
+		if (get_token(tmp2->cmd))
 			return (1);
 	}
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
+		{
+			// free(tmp->cmd);
 			return (1);
+		}
 		c = 0;
 		if (get_token_pars(tmp->cmd)
 		&& get_token_pars(tmp->next->cmd))
