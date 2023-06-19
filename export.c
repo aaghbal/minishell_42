@@ -42,16 +42,18 @@ int	export_empty(t_list *export_list, t_list *env_list, char *var)
 	int	i;
 
 	i = 0;
-	while (var[++i])
+	char *tmp = ft_strdup(var);
+	while (tmp[++i])
 	{
-		if (var[i] == '=' && var[i + 1] == '\0')
+		if (tmp[i] == '=' && tmp[i + 1] == '\0')
 		{
-			ft_lstadd_back(&export_list, ft_lstnew(var));
-			ft_lstadd_back(&env_list, ft_lstnew(var));
+
+			ft_lstadd_back(&export_list, ft_lstnew(tmp));
+			ft_lstadd_back(&env_list, ft_lstnew(tmp));
 			return (0);
 		}
-		else if (!var[i + 1])
-			ft_lstadd_back(&export_list, ft_lstnew(var));
+		else if (!tmp[i + 1])
+			ft_lstadd_back(&export_list, ft_lstnew(tmp));
 	}
 	return (1);
 }

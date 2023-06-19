@@ -14,14 +14,18 @@
 void	ft_pwd(t_list **expo)
 {
 	char 	**tmp2;
+	char 	*tmp;
+	char	*tmp3;
 	t_list *head = *expo;
 	while (head)
 	{
 		tmp2 = ft_split(head->content, '=');
 		if (!ft_strncmp(tmp2[0], "PWD", ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen("PWD"))
 		{
-			head->content = ft_substr(head->content, 0, ft_strlen("PWD="));
-			head->content = ft_strjoin(head->content, getcwd(NULL, 0));
+			tmp = ft_substr(head->content, 0, ft_strlen("PWD="));
+            tmp3 = ft_strjoin(tmp, getcwd(NULL, 0));
+            head->content = tmp3;
+            free(tmp);
 		}
 		free_tabb(tmp2);
 		head = head->next;
@@ -30,29 +34,67 @@ void	ft_pwd(t_list **expo)
 void	ft_oldpwd(t_list **expo)
 {
 	char 	**tmp2;
+	char 	*tmp;
+	char 	*tmp3;
 	t_list *head = *expo;
 	while (head)
 	{
 		tmp2 = ft_split(head->content, '=');
 		if (!ft_strncmp(tmp2[0], "OLDPWD", ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen("OLDPWD"))
 		{
-			head->content = ft_substr(head->content, 0, ft_strlen("OLDPWD="));
-			head->content = ft_strjoin(head->content, getcwd(NULL, 0));
+			tmp = ft_substr(head->content, 0, ft_strlen("OLDPWD="));
+            tmp3 = ft_strjoin(tmp, getcwd(NULL, 0));
+            head->content = tmp3;
+            free(tmp);
 		}
 		free_tabb(tmp2);
 		head = head->next;
 	}
 }
 
-void	my_cd(t_arg *cmd, t_list **expo)
+char *get_key_exp(t_list *exp, char *key)
 {
-	ft_oldpwd(expo);
-	if (chdir(cmd->arg[1]) == -1)
+	char **tmp2;
+
+	while (exp)
 	{
-		printf ("cd: not a directory\n");
-		g_ext_s = 1;
+		tmp2 = ft_split(exp->content, '=');
+		if (!ft_strncmp(key, tmp2[0], ft_strlen(key)))
+			return tmp2[1];
+		free_tabb(tmp2);
+		exp = exp->next;
 	}
-	ft_pwd(expo);
+	return (NULL);
+}
+
+void	my_cd(t_arg *cmd, t_list **expo, t_list  **env)
+{
+	t_list *tmp = *expo;
+	t_list *tmp2 = *env;
+	ft_oldpwd(&tmp);
+	ft_oldpwd(&tmp2);
+	if (cmd->arg[1])
+	{
+		if (chdir(cmd->arg[1]) == -1)
+		{
+			printf("cd: No such file or directory\n");
+			g_ext_s = 1;
+		}
+	}
+	else
+	{
+		if (chdir(get_key_exp((*expo), "HOME")) == -1)
+		{
+			printf("cd: HOME not set\n");
+			g_ext_s = 1;
+		}
+
+	}
+	g_ext_s = 0;
+	tmp = *expo;
+	tmp2 = *env;
+	ft_pwd(&tmp);
+	ft_pwd(&tmp2);
 }
 
 void	my_env(t_list *env_list)

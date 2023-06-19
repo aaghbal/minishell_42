@@ -74,7 +74,7 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
 void	my_pwd(void);
 void	my_exit(t_arg *cmd);
-void	my_cd(t_arg *cmd, t_list **expo);
+void	my_cd(t_arg *cmd, t_list **expo, t_list **env);
 void	my_unset(char *cmd, t_list *export_list, t_list *env_list);
 void	my_exec_cmd(t_arg *cmd, int pi);
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list);
@@ -101,6 +101,7 @@ char	*add_var(t_list *export_list, char *var);
 
 /*---signals---*/
 void	sighandler(int signal);
+void	sighandler_child(int signal);
 
 /*---parsing---*/
 t_token	*ft_tokenlast(t_token *lst);

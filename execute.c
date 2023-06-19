@@ -47,8 +47,12 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 	int			pid;
 	int			file_d2;
 
+	file_d2 = 0;
 	pipe(fd);
 	pipe(fd2);
+	signal(3, sighandler_child);
+	signal(2, sighandler_child);
+	signal(11, sighandler_child);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -59,7 +63,7 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 				dup2(fd[1], STDOUT_FILENO);
 			dup2(fd2[0], STDIN_FILENO);
 			close_file(file_d, fd2);
-			close_file(file_d2, fd);
+			close_file(file_d, fd);
 			if (tmp->cmd[0] != '<')
 				all_cmd(tmp, export_list, env_list);
 			else
@@ -80,8 +84,7 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 			dup2(fd[1], STDOUT_FILENO);
 		else if ((tmp && tmp->next && tmp->next->cmd[0] == '>'))
 		{
-			file_d = redirect(tmp);
-			if (!ft_strncmp(tmp->next->cmd, "<", 2))
+			if (tmp->next->next && !ft_strncmp(tmp->next->next->cmd, "<", 2))
 			{
 				file_d2 = redirect_inpt(tmp);
 				if (file_d2 == -1)
@@ -92,7 +95,8 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 					exit(1);
 				}
 			}
-			s = 0;
+			file_d = redirect(tmp);
+			// s = 0;
 		}
 		else if ((tmp && tmp->next && tmp->next->cmd[0] == '<'))
 		{
@@ -101,7 +105,7 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 			{
 				printf ("minishell: %s: No such file or directory\n", tmp->next->redfile);
 				close_file(file_d, fd2);
-				close_file(file_d2, fd);
+				close_file(file_d, fd);
 				exit(1);
 			}
 			close (s);
@@ -118,15 +122,30 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 	}
 	else
 	{
-		close_file(file_d2, fd2);
-		s = parent(file_d, s, fd);
-	}
-	if (!tmp->next || (tmp->cmd[0] == '|' && tmp->next->cmd[0] == '>' && !tmp->next->next->next))
-	{
 		close_file(file_d, fd2);
-		close_file(file_d2, fd);
-		close(s);
-		s = reset(pid);
+		s = parent(file_d, s, fd);
+		if (!tmp->next || (tmp->cmd[0] == '|' && tmp->next->cmd[0] == '>' && !tmp->next->next->next)) //???
+		{
+			close_file(file_d, fd2);
+			close_file(file_d2, fd);
+			close(s);
+			s = reset(pid);
+		}
+		else
+		{
+			tmp = tmp->next;
+			while (tmp && (tmp->cmd[0] == '>' || tmp->cmd[0] == '<'))
+			{
+				tmp = tmp->next;
+				if (!tmp)
+				{
+					close_file(file_d, fd2);
+					close_file(file_d2, fd);
+					close(s);
+					s = reset(pid);
+				}
+			}
+		}
 	}
 }
 
@@ -175,13 +194,13 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list, int file_d)
 				tmp = tmp->next;
 		}
 	}
-	free_arg(tmp);
 }
 
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
 {
 	int	file_d;
 	int	i;
+	int status;
 	
 	i = 0;
 	file_d = 0;
@@ -189,22 +208,26 @@ void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
 			"export", 7) && tmp->arg[1])
 	{
 		while (tmp->arg[++i])
+		{
 			my_export(export_list, env_list, tmp->arg[i]);
+		}
 		return ;
 	}
 	else if (!get_next_pip(tmp) && !ft_strncmp(tmp->cmd,
 			"unset", 6) && tmp->arg[1])
 	{
 		while (tmp->arg[++i])
+		{
 			my_unset(tmp->arg[i], export_list, env_list);
+		}
 		return ;
 	}
 	else if (!ft_strncmp(tmp->cmd, "cd", 3) && !tmp->next)
 	{
-		my_cd(tmp, &export_list);
+		my_cd(tmp, &export_list, &env_list);
 		return ;
 	}
 	execute2(tmp, export_list, env_list, file_d);
-	while (wait(0) != -1 || errno != ECHILD)
+	while (wait(&status) != -1 || errno != ECHILD)
 		tmp = NULL;
 }

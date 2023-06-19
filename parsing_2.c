@@ -80,20 +80,21 @@ int	ft_parsing_2(t_token **token)
 	t_token *tmp1;
 	t_token *tmp2;
 
+	char *str = NULL;
 	tmp = *token;
 	tmp1 = *token;
 	tmp2 = ft_tokenlast(tmp1);
 	int c = 1;
 	if (tmp1->cmd != NULL)
 	{
-		if (get_token(tmp2->cmd))
-			return (1);
+		str = get_token(tmp2->cmd);
+		if (str)
+			return (free(str), 1);
 	}
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
 		{
-			// free(tmp->cmd);
 			return (1);
 		}
 		c = 0;

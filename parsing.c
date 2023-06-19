@@ -51,6 +51,7 @@ char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 		free_tabb(tmp2);
 		expo = expo->next;
 	}
+	free(tmp);
 	if (!str)
 		str = ft_strdup("\t");
 	return(str);

@@ -26,7 +26,6 @@ char **alloc_arg(char **args, char *cmd)
 	}
 	new[i++] = ft_strdup(cmd);
 	new[i] = NULL;
-	free(cmd);
 	free_tabb(args);
 	return (new);
 }
@@ -87,7 +86,6 @@ void	apend_redirection(t_token **tmp, t_arg **arg)
 	if ((*tmp) && !get_token((*tmp)->cmd))
 	{
 		red->redfile = ft_strdup((*tmp)->cmd);
-		free((*tmp)->cmd);
 	}
 	if ((*tmp) && ft_strncmp((*tmp)->cmd, "<<", 3))
 	{
@@ -130,7 +128,6 @@ void	is_arg(t_token *tmp, t_arg **arg)
 			}
 		}
 	}
-	free_list(tmp);
 }
 
  void	free_tabb(char **tabb)
@@ -145,23 +142,29 @@ void	is_arg(t_token *tmp, t_arg **arg)
 
  void	free_list(t_token *tabb)
 {
+	t_token *tok;
+
+	tok = NULL;
 	while (tabb)
 	{	
-		free(tabb);
+		free(tabb->cmd);
+		tabb->cmd = NULL;
+		tok = tabb;
 		tabb = tabb->next;
+		free(tok);
 	}
-	free(tabb);
 }
  void	free_arg(t_arg *str)
 {
 	while (str)
 	{
-		free(str->cmd);
+		if (str->cmd)
+			free(str->cmd);
+		str->cmd = NULL;
 		free_tabb(str->arg);
 		free(str);
 		if (str->redfile)
 			free(str->redfile);
 		str = str->next;
 	}
-	free(str);
 }

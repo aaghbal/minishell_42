@@ -117,17 +117,12 @@ int  token_line(char *line, t_list *export_list, t_list *env_list)
 	data->str = NULL;
 	ft_tokenization(&token, data, export_list, line);
 	if (ft_parsing_2(&token) && !parsing_3(line))
-	{
-		free_list(token);
-
-		free(data);
-		return(1);
-	}
+		return(free(line), free_list(token), free(data), 1);
 	is_arg(token, &arg);
-	free_list(token);
+	execute(arg, export_list, env_list);
 	free(line);
 	free(data);
-	execute(arg, export_list, env_list);
+	free_list(token);
 	free_arg(arg);
 	return(0);
 }
