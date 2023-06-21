@@ -1,14 +1,3 @@
-/******************************************************************************/
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execute_utils2.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/20 16:10:01 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/20 16:10:17 by zel-kach         ###   ########.fr       */
-/*                                                                            */
-/******************************************************************************/
 
 #include "minishell.h"
 
@@ -46,7 +35,7 @@ t_arg	*first_redirect(t_arg *tmp)
 {
 	int	file_d;
 
-	if (tmp->cmd[0] == '>' && !tmp->redfile)
+	if (tmp->next &&  tmp->cmd[0] == '>' && !tmp->redfile)
 	{
 		file_d = open(tmp->next->cmd, O_CREAT | O_RDWR, 0644);
 		tmp = tmp->next;

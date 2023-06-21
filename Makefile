@@ -25,7 +25,7 @@ CC = cc
 
 RM = rm -f
 
-CFLAGS = -Wall -Wextra -Werror -g -I $(shell brew --prefix readline)/include
+CFLAGS = -Wall -Wextra  -g -I $(shell brew --prefix readline)/include
 
 all: libftm ${NAME}
 

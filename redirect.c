@@ -71,7 +71,7 @@ int	parsing(char *str)
 		return (1);
 	if (check_line_2(str))
 	{
-		printf("\e[0;31mminishell : command not found\n");
+		printf("\e[0;31msyntax error\n");
 		g_ext_s = 127;
 		return (1);
 	}

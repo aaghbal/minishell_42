@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 {
 	char	**str;
@@ -45,7 +44,6 @@ void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, env) == -1)
 			i++;
 	}
-	// free_arg(cmd);
 	exit (127);
 }
 
@@ -63,11 +61,8 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 		my_cd(cmd, export_list, env_list);
 	else if (!ft_strncmp(cmd->cmd, "env", 4))
 		my_env(env_list);
-	else if (!ft_strncmp(cmd->cmd, "export", 6))
-	{
-		printf("main\n");
+	else if (!ft_strncmp(cmd->cmd, "export", 7))
 		my_export(export_list, env_list, cmd->arg[1]);
-	}
 	else if (!ft_strncmp(cmd->cmd, "unset", 6))
 		my_unset(cmd->arg[1], export_list, env_list);
 	else
@@ -92,7 +87,8 @@ void	ft_read(t_list	**export_list, t_list *env_list)
 		add_history(str);
 		if (parsing(str))
 		{
-			free(str);
+			if (str)
+				free(str);
 			continue ;
 		}
 		if (str)
@@ -108,6 +104,7 @@ void	ft_read(t_list	**export_list, t_list *env_list)
 			}
 		}
 	}
+	system("leaks minishell");
 }
 
 void	create_env(t_list **env_list, t_list **export_list)

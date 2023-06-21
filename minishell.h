@@ -160,5 +160,6 @@ int		r_inpt(t_arg *tmp, int fd[2], int fd2[2]);
 int		current_pipe(t_arg *tmp, int fd[2], int fd2[2], int s);
 int		execute_hered(t_arg *tmp, int fd[2], int fd2[2]);
 t_arg	*first_redirect(t_arg *tmp);
+void	append_word_2(char **tmp, t_arg **arg);
 
 #endif

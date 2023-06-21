@@ -15,16 +15,16 @@
 char	*get_key_exp(t_list *exp, char *key)
 {
 	char	**tmp2;
-	t_list *head;
+	t_list	*head;
 
 	head = exp;
-	while (head )
+	while (head)
 	{
 		tmp2 = ft_split(head ->content, '=');
 		if (!ft_strncmp(key, tmp2[0], ft_strlen(key)))
 			return (tmp2[1]);
 		free_tabb(tmp2);
-		head  = head ->next;
+		head = head->next;
 	}
 	return (NULL);
 }

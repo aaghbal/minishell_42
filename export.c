@@ -40,19 +40,22 @@ void	print_epxport(t_list *export_list)
 
 void	export_empty(t_list *export_list, t_list *env_list, char *var)
 {
-	int	i;
+	int		i;
+	char	*tmp;
+
 
 	i = 0;
+	tmp = ft_strdup(var);
 	while (var[++i])
 	{
 		if (var[i] == '=')
 		{
-			ft_lstadd_back(&export_list, ft_lstnew(var));
-			ft_lstadd_back(&env_list, ft_lstnew(var));
+			ft_lstadd_back(&export_list, ft_lstnew(tmp));
+			ft_lstadd_back(&env_list, ft_lstnew(tmp));
 			return ;
 		}
 		else if (!var[i + 1])
-			ft_lstadd_back(&export_list, ft_lstnew(var));
+			ft_lstadd_back(&export_list, ft_lstnew(tmp));
 	}
 	return ;
 }
@@ -72,18 +75,24 @@ char	*add_var(t_list *export_list, char *var)
 			if (tmp3[1] && tmp3[1][1] != '\0')
 			{
 				var = ft_strjoin(export_list->content, tmp3[1] + 1);
-				free(tmp2);
-				free(tmp3);
+				free_tabb(tmp2);
+				free_tabb(tmp3);
+				free (export_list->content);
 				return (var);
 			}
-			free(tmp2);
-			free(tmp3);
-			return (ft_strjoin(tmp3[0], tmp3[1]));
+			char *s = ft_strjoin(tmp3[0], tmp3[1]);
+			free_tabb(tmp2);
+			free_tabb(tmp3);
+			printf("%s\n", s);
+			return (s);
 		}
-		free(tmp2);
+		free_tabb(tmp2);
 		export_list = export_list->next;
 	}
-	return (ft_strjoin(tmp3[0], tmp3[1]));
+	char *s = ft_strjoin(tmp3[0], tmp3[1]);
+	free_tabb(tmp3);
+	printf("%s\n", s);
+	return (s);
 }
 
 int	same_var(t_list *export_list, t_list *env_list, char *var)
@@ -101,9 +110,14 @@ int	same_var(t_list *export_list, t_list *env_list, char *var)
 			&& ft_strlen(tmp3[0]) == ft_strlen(tmp2[0]))
 		{
 			if (!tmp3[1] && var[ft_strlen(var) - 1] != '=')
+			{
+				free_tabb(tmp2);
+				free_tabb(tmp3);
 				return (0);
+			}
 			my_unset(tmp2[0], export_list, env_list);
 			free_tabb(tmp2);
+			free_tabb(tmp3);
 			return (1);
 		}
 		free_tabb(tmp2);

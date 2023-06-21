@@ -78,15 +78,12 @@ int	ft_pars_last(t_token **token)
 {
 	t_token	*tmp1;
 	t_token	*tmp2;
-	char	*str;
 
-	str = NULL;
 	tmp1 = *token;
 	tmp2 = ft_tokenlast(tmp1);
-	if (tmp1->cmd != NULL)
+	if (tmp1->cmd != NULL && tmp2->key == 0)
 	{
-		str = get_token(tmp2->cmd);
-		if (str)
+		if (get_token(tmp2->cmd))
 			return (1);
 	}
 	return (0);
@@ -107,7 +104,11 @@ int	ft_parsing_2(t_token **token)
 	{
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
 			return (1);
-		if (get_token_pars(tmp->cmd) && get_token_pars(tmp->next->cmd))
+		if (tmp->next && get_token_pars(tmp->cmd)
+			&& get_token_pars(tmp->next->cmd))
+			return (1);
+		if (tmp->next && get_token_pars(tmp->cmd)
+			&& !ft_strncmp(tmp->next->cmd, "|", 1))
 			return (1);
 		c = 0;
 		tmp = tmp->next;

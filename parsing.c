@@ -26,6 +26,34 @@ int	get_next_quotes(char *line, int n, int i)
 	}
 	return(0);
 }
+char	*ft_remove_sp(char *str)
+{
+	int i;
+	int on;
+	char *tmp;
+
+	on = 0;
+	i = 0;
+	tmp = NULL;
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+	while (str[i])
+	{
+		if (str[i] == ' ' || str[i] == '\t')
+			on = 1;
+		if (!(str[i] == ' ' || str[i] == '\t'))
+		{
+			if (on == 1)
+				tmp = append_char(tmp, ' ');
+			on = 0;
+			tmp = append_char(tmp, str[i]);
+		}
+		i++;
+	}
+	free(str);
+	return (tmp);
+}
+
 char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 {
 	int		i[2];
@@ -43,9 +71,11 @@ char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (!ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])) 
-		&& ft_strlen(tmp2[0]) == ft_strlen(tmp))
+		if (!ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])))
+		{
+			tmp2[1] = ft_remove_sp(tmp2[1]);
 			str = ft_strjoin(str, tmp2[1]);
+		}
 		free_tabb(tmp2);
 		expo = expo->next;
 	}
@@ -65,7 +95,7 @@ char	*double_quotes(char *line,char *str, int *len, t_list *expo)
 		str = append_char(str, line[(*len)++]);
 	while (line[(*len)])
 	{
-		if (line[(*len)] == '$' && ft_isalpha(line[(*len) + 1]))
+		if (line[(*len)] == '$' && (ft_isalpha(line[(*len) + 1])))
 			str = ft_expand(line, len,str, expo);
 		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break;
@@ -79,6 +109,10 @@ char	*double_quotes(char *line,char *str, int *len, t_list *expo)
 			str = append_char(str, line[(*len)]);
 		 if (line[(*len)] == '\0')
 			break;
+		if (line[(*len)] == '$' && (ft_isalpha(line[(*len) + 1])))
+		{
+		}
+		else
 			(*len)++;
 	}
 	return (str);

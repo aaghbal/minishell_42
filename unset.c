@@ -23,6 +23,7 @@ void	unset_export(char *cmd, t_list *export_list)
 				|| !ft_strncmp(tmp->content + ft_strlen(cmd), "\0", 1)))
 		{
 			export_list->next = tmp->next;
+			free(tmp->content);
 			free(tmp);
 			tmp = NULL;
 			break ;
@@ -43,6 +44,7 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 			&& !ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))
 		{
 			env_list->next = tmp->next;
+			free(tmp->content);
 			free(tmp);
 			tmp = NULL;
 			break ;

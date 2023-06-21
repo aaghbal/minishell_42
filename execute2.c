@@ -33,7 +33,7 @@ int	execute_parent(t_arg *tmp, int fd[2], int fd2[2], int s)
 {
 	close_file(0, fd2);
 	if (!tmp->next || (tmp->cmd[0] == '|'
-			&& tmp->next->cmd[0] == '>' && !tmp->next->next->next)) //???
+			&& tmp->next->cmd[0] == '>' && !tmp->next->next->next)) //???a
 	{
 		close_file(0, fd2);
 		close_file(0, fd);

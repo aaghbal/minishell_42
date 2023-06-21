@@ -82,7 +82,6 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 		else
 			tmp = exe1(tmp, export_list, env_list);
 	}
-	free_arg(tmp);
 }
 
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
@@ -92,7 +91,6 @@ void	execute(t_arg *tmp, t_list *export_list, t_list *env_list)
 	i = 0;
 	if (!ft_strncmp(tmp->cmd, "export", 7) && tmp->arg[1])
 	{
-		tmp = if_export(tmp, export_list, env_list);
 		tmp = if_export(tmp, export_list, env_list);
 		if (!tmp)
 			return ;

@@ -47,22 +47,9 @@ void	tokenization(t_token **tok, t_data *data, t_list *exp_list, char *line)
 }
 void	ft_pars_nor(char *line, int *i, int *c)
 {
-	if (line[*i] == '\'')
-	{
-		(*i)++;
-		while (line[*i] && line[*i] != '\'')
-			(*i)++;
-		*c = 1;
-	}
-	if (line[*i] == '\"')
-	{
-		(*i)++;
-		while (line[*i] && line[*i] != '\"')
-			(*i)++;
-		*c = 1;
-	}
-	if (((line[*i] == '<' && line[*i + 1] == '<') || (line[*i] == '<' && line[*i
-				+ 1] == '<')))
+
+	if (((line[*i] == '<' && line[*i + 1] == '<') || (line[*i] == '<' 
+	&& line[*i+ 1] == '<')))
 		*c = 0;
 	else if ((line[*i] == '<' || line[*i] == '>' || line[*i] == '|'))
 	{
@@ -115,10 +102,13 @@ int	token_line(char *line, t_list *export_list, t_list *env_list)
 	if (ft_parsing_2(&token) && !parsing_3(line))
 		return (1);
 	is_arg(token, &arg);
-	// free(line);
-	// free(data);
-	// free_list(token);
+	if (line)
+		free(line);
+	if (data)
+		free(data);
+	if (token)
+		free_list(token);
 	execute(arg, export_list, env_list);
-	// free_arg(arg);
+	free_arg(arg);
 	return (0);
 }

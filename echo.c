@@ -41,11 +41,11 @@ int	chek_arg(char *str)
 			if (str[j] == 'n')
 				j++;
 			else
-			return (0);
+				return (0);
 		}
 	}
 	else
-		return(0);
+		return (0);
 	return (1);
 }
 
@@ -57,7 +57,7 @@ void	my_echo(t_arg *cmd)
 		&& chek_arg(cmd->arg[1]))
 	{
 		i = 1;
-		while(chek_arg(cmd->arg[i]))
+		while (chek_arg(cmd->arg[i]))
 			i++;
 		while (cmd->arg[i])
 		{
