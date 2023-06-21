@@ -18,7 +18,7 @@ void	echo_newline(t_arg *cmd)
 	i = 0;
 	while (cmd->arg[++i])
 	{
-		if (!ft_strncmp(cmd->arg[i], "$?", 3))
+		if (!ft_strncmp(cmd->arg[i], "$?", 2))
 			printf("%d", g_ext_s);
 		else
 			printf("%s", cmd->arg[i]);
@@ -28,17 +28,24 @@ void	echo_newline(t_arg *cmd)
 	printf("\n");
 }
 
-int chek_arg(char *str)
+int	chek_arg(char *str)
 {
-	int j;
+	int	j;
 
-	j = 1;
-	while (str[j])
+	j = 0;
+	if (str[0] == '-')
 	{
-		if (str[j] != 'n')
-			return (0);
 		j++;
+		while (str[j])
+		{
+			if (str[j] == 'n')
+				j++;
+			else
+			return (0);
+		}
 	}
+	else
+		return(0);
 	return (1);
 }
 
@@ -46,10 +53,11 @@ void	my_echo(t_arg *cmd)
 {
 	int	i;
 
-	if (cmd->arg[1][0] == '-' && cmd->arg[1][1] == 'n' && chek_arg(cmd->arg[1]))
+	if (cmd->arg[1] && cmd->arg[1][0] == '-' && cmd->arg[1][1] == 'n'
+		&& chek_arg(cmd->arg[1]))
 	{
-		i = 2;
-		if (chek_arg(cmd->arg[i]))
+		i = 1;
+		while(chek_arg(cmd->arg[i]))
 			i++;
 		while (cmd->arg[i])
 		{

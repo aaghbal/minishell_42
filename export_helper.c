@@ -1,4 +1,27 @@
+/******************************************************************************/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_helper.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/20 16:09:49 by zel-kach          #+#    #+#             */
+/*   Updated: 2023/06/20 16:21:58 by zel-kach         ###   ########.fr       */
+/*                                                                            */
+/******************************************************************************/
+
 #include "minishell.h"
+
+char	*export_addpars(t_list *export_list, char *var, int i)
+{
+	if (var[i + 1] && var[i + 1] == '=' && ft_isalnum(var[i - 1]))
+		return (add_var(export_list, var));
+	else
+	{
+		printf ("export: %s: not a valid identifier\n", var);
+		return (NULL);
+	}
+}
 
 char	*export_pars(t_list *export_list, char *var)
 {
@@ -24,15 +47,7 @@ char	*export_pars(t_list *export_list, char *var)
 				break ;
 		}
 		if (var[i] == '+')
-		{
-			if (var[i + 1] && var[i + 1] == '=' && ft_isalnum(var[i - 1]))
-				return (add_var(export_list, var));
-			else
-			{
-				printf ("export: %s: not a valid identifier\n", var);
-				return (NULL);
-			}
-		}
+			return (export_addpars(export_list, var, i));
 	}
 	return (var);
 }

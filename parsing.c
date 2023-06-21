@@ -28,32 +28,30 @@ int	get_next_quotes(char *line, int n, int i)
 }
 char	*ft_expand(char *line, int *len, char *str,  t_list *expo)
 {
-	int		i;
-	int		c;
-	int		j;
+	int		i[2];
 	char	*tmp;
 	char	**tmp2;
 
-	i = 0;
-	c = 0;
-	j = ++(*len);
-	while (ft_isalpha(line[j]) == 1 || ft_isdigit(line[j]) ==  1)
-		j++;
-	tmp = malloc(sizeof(char) * (j - (*len)) + 1);
-	while ((*len) < j)
-		tmp[i++] = line[(*len)++];
-	tmp[i] = '\0';
+	i[0] = 0;
+	i[1] = ++(*len);
+	while (ft_isalpha(line[i[1]]) == 1 || ft_isdigit(line[i[1]]) ==  1)
+		i[1]++;
+	tmp = malloc(sizeof(char) * (i[1] - (*len)) + 1);
+	while ((*len) < i[1])
+		tmp[i[0]++] = line[(*len)++];
+	tmp[i[0]] = '\0';
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (!ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen(tmp))
+		if (!ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])) 
+		&& ft_strlen(tmp2[0]) == ft_strlen(tmp))
 			str = ft_strjoin(str, tmp2[1]);
 		free_tabb(tmp2);
 		expo = expo->next;
 	}
 	free(tmp);
 	if (!str)
-		str = ft_strdup("\t");
+		str = ft_strdup("");
 	return(str);
 }
 
@@ -69,19 +67,19 @@ char	*double_quotes(char *line,char *str, int *len, t_list *expo)
 	{
 		if (line[(*len)] == '$' && ft_isalpha(line[(*len) + 1]))
 			str = ft_expand(line, len,str, expo);
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break;
-		if (line[(*len)] == '\'' && on == 0)
+		else if (line[(*len)] == '\'' && on == 0)
 			str = single_quotes(line, str, len);
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break;
-		if (line[(*len)] == '\0')
-			break;
-		if (line[(*len)] == '\"')
+		else if (line[(*len)] == '\"')
 			on = 0;
 		else
 			str = append_char(str, line[(*len)]);
-		(*len)++;
+		 if (line[(*len)] == '\0')
+			break;
+			(*len)++;
 	}
 	return (str);
 }
@@ -98,16 +96,16 @@ char	*single_quotes(char *line,char *str, int *len)
 	{
 		if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break;
-		if (line[(*len)] == '\"' && on == 0)
+		else if (line[(*len)] == '\"' && on == 0)
 			str = double_quotes(line, str, len, NULL);
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break;
+		else if (line[(*len)] == '\'')
+			on = 0;
+		else
+			str = append_char(str, line[(*len)]);
 		if (line[(*len)] == '\0')
 			break;
-		if (line[(*len)] == '\'')
-			on = 0;
-		else if (line[(*len)] != '\'')
-			str = append_char(str, line[(*len)]);
 		(*len)++;
 	}
 	return (str);
@@ -119,7 +117,7 @@ void	default_cmd(t_data *data, char *line, t_list *expo)
 	{
 		if (line[data->i] == '$' && ft_isalpha(line[data->i + 1]))
 			data->str = ft_expand(line, &data->i,data->str, expo);
-		if (line[(data->i)] != '\"' && line[data->i] != '\'' && line[(data->i)])
+		else if (line[(data->i)] != '\"' && line[data->i] != '\'' && line[(data->i)])
 			data->str = append_char(data->str, line[(data->i)++]);
 		else
 		{

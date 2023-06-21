@@ -11,66 +11,11 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-int	hered_check(t_arg *tmp)
+void	here_doc4(t_arg *tmp, int fd[2], int i, char **delimiter)
 {
-	while (tmp)
-	{
-		if (!ft_strncmp(tmp->cmd, "<<", 3))
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
-char	**alloc(t_arg	*file)
-{
-	int		i;
-	char	**delem;
-
-	i = 0;
-	if (!ft_strncmp(file->cmd, "<<", 3))
-		i++;
-	while (file && file->next && !ft_strncmp(file->next->cmd, "<<", 3))
-	{
-		i++;
-		file = file->next;
-	}
-	delem = malloc(sizeof(char *) * i + 1);
-	return (delem);
-}
-
-int	here_doc2(t_arg *tmp, int fd[2])
-{
-	char	**delimiter;
-	int		file_d;
 	char	*input;
-	t_arg	*file;
-	int		i;
 
-	delimiter = NULL;
-	file_d = 0;
-	i = 0;
-	file = tmp;
-	delimiter = alloc(file);
-	if (!ft_strncmp(file->cmd, "<<", 3))
-	{
-		delimiter[i] = ft_strdup(file->redfile);
-		file = file->next;
-		i++;
-	}
-	else
-	{
-		file = file->next;
-		tmp = tmp->next;
-	}
-	while (file && !ft_strncmp(file->cmd, "<<", 3))
-	{
-		delimiter[i] = ft_strdup(file->redfile);
-		i++;
-		file = file->next;
-	}
-	i--;
-	file = NULL;
+	input = NULL;
 	while (i > -1)
 	{
 		input = readline(">");
@@ -85,16 +30,55 @@ int	here_doc2(t_arg *tmp, int fd[2])
 				ft_putendl_fd(input, fd[1]);
 			input = readline(">");
 		}
-		i--;	
+		i--;
 		tmp = tmp->next;
 	}
-	if (file)
-		file_d = redirect(file);
-	return (file_d);
 }
 
+void	here_doc3(t_arg *tmp, t_arg *file, int fd[2])
+{
+	char	**delimiter;
+	int		i;
+
+	i = 0;
+	delimiter = alloc(file);
+	while (file && !ft_strncmp(file->cmd, "<<", 3))
+	{
+		delimiter[i] = ft_strdup(file->redfile);
+		i++;
+		file = file->next;
+	}
+	here_doc4(tmp, fd, i - 1, delimiter);
+}
+
+int	here_doc2(t_arg *tmp, int fd[2], t_arg *file, t_arg *file_out)
+{
+	int		i;
+
+	i = 0;
+	here_doc3(tmp, file, fd);
+	if (file_out)
+		i = redirect(file_out);
+	return (i);
+}
 
 int	here_doc(t_arg *tmp, int fd[2])
 {
-	return (here_doc2(tmp, fd));
+	t_arg	*file;
+	t_arg	*file_out;
+
+	file = tmp;
+	file_out = NULL;
+	if (ft_strncmp(file->cmd, "<<", 3))
+	{
+		if (tmp->next && tmp->next->cmd[0] == '>')
+		{
+			file_out = tmp;
+			file = file->next;
+			tmp = tmp->next;
+		}
+		file = file->next;
+		tmp = tmp->next;
+	}
+	return (here_doc2(tmp, fd, file, file_out));
 }

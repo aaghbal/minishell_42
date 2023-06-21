@@ -9,25 +9,9 @@
 /*   Updated: 2023/06/13 13:48:26 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
-char **list_to_tabs(t_list *list)
-{
-	char **tabs;
-
-	tabs = (char **)malloc((ft_lstsize(list) + 1) * sizeof(char *));
-
-	t_list *tmp = list;
-	int i =0;
-	while (tmp)
-	{
-		tabs[i] = ft_strdup(tmp->content);
-		i++;
-		tmp = tmp->next;
-	}
-	tabs[i] = NULL;
-	return tabs;
-}
 
 void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 {
@@ -61,12 +45,8 @@ void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, env) == -1)
 			i++;
 	}
-	printf("\e[0;31mminishell: cmmand not found\n");
-	if (cmd->cmd[0] == '.' && cmd->cmd[1] == '/')
-		exit (126);
-	else
-		exit (127);
-
+	// free_arg(cmd);
+	exit (127);
 }
 
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
@@ -74,17 +54,20 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	if (!ft_strncmp(cmd->cmd, "\t", 3))
 		exit (0);
 	else if (!ft_strncmp(cmd->cmd, "pwd", 4))
-		my_pwd();
+		my_pwd(export_list);
 	else if (!ft_strncmp(cmd->cmd, "exit", 5))
 		my_exit(cmd);
 	else if (!ft_strncmp(cmd->cmd, "echo", 5))
 		my_echo(cmd);
 	else if (!ft_strncmp(cmd->cmd, "cd", 3))
-		my_cd(cmd, &export_list, &env_list);
+		my_cd(cmd, export_list, env_list);
 	else if (!ft_strncmp(cmd->cmd, "env", 4))
 		my_env(env_list);
 	else if (!ft_strncmp(cmd->cmd, "export", 6))
+	{
+		printf("main\n");
 		my_export(export_list, env_list, cmd->arg[1]);
+	}
 	else if (!ft_strncmp(cmd->cmd, "unset", 6))
 		my_unset(cmd->arg[1], export_list, env_list);
 	else
@@ -92,19 +75,6 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	exit (0);
 }
 
-int	check_line(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ' && str[i] != '\t')
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 void	ft_read(t_list	**export_list, t_list *env_list)
 {
@@ -119,12 +89,12 @@ void	ft_read(t_list	**export_list, t_list *env_list)
 		signal(11, sighandler);
 		signal(2, sighandler);
 		str = readline("\e[0;32mminishell ➜ \e[m");
+		add_history(str);
 		if (parsing(str))
 		{
 			free(str);
 			continue ;
 		}
-		add_history(str);
 		if (str)
 		{
 			tmp = malloc(sizeof(char) * ft_strlen(str) + 1);
@@ -137,21 +107,20 @@ void	ft_read(t_list	**export_list, t_list *env_list)
 				g_ext_s = 258;
 			}
 		}
-		// system("leaks minishell");
 	}
 }
 
 void	create_env(t_list **env_list, t_list **export_list)
 {
 	static int i = 1;
-	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
-	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i))));
-	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
-	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
+	ft_lstadd_back(env_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PATH=", _PATH_STDPATH)));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("PWD=", getcwd(NULL, 0))));
 	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("SHLVL=", ft_itoa(i++))));
+	ft_lstadd_back(export_list, ft_lstnew(ft_strjoin("_=", "usr/bin/env")));
 }
 
 
@@ -171,37 +140,42 @@ void	shelvl_env(t_list	*env_list, char **env , int *i)
 	free(num);
 }
 
-int	main(int ac, char **av, char *env[])
+void	ft_env_exp(char **env, t_list	**env_list, t_list	**export_list)
 {
-	t_list	*env_list = NULL;
-	t_list	*export_list = NULL;
-	char	*str;
 	int		i;
 
-	(void)av;
-	(void)ac;
-	str = NULL;
 	i = -1;
 	if (!env[0])
-		create_env(&env_list, &export_list);
+		create_env(env_list, export_list);
 	else
 	{
 		while (env[++i])
 		{
 			if (ft_strncmp(env[i], "SHLVL", 5) == 0)
-				shelvl_env(env_list, env, &i);
+				shelvl_env(*env_list, env, &i);
 			else
-				ft_lstadd_back(&env_list, ft_lstnew(env[i]));
+				ft_lstadd_back(env_list, ft_lstnew(env[i]));
 		}
 		i = -1;
 		while (env[++i])
 		{
 			if (ft_strncmp(env[i], "SHLVL", 5) == 0)
-				shelvl_env(export_list, env, &i);
+				shelvl_env(*export_list, env, &i);
 			else
-				ft_lstadd_back(&export_list, ft_lstnew(env[i]));
+				ft_lstadd_back(export_list, ft_lstnew(env[i]));
 		}
 	}
+}
 
+int	main(int ac, char **av, char *env[])
+{
+	t_list	*env_list;
+	t_list	*export_list;
+
+	env_list = NULL;
+	export_list = NULL;
+	(void)av;
+	(void)ac;
+	ft_env_exp(env, &env_list, &export_list);
 	ft_read(&export_list, env_list);
 }

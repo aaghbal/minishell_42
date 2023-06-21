@@ -3,76 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   cmds.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 08:08:39 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/06/21 03:11:41 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
-void	ft_pwd(t_list **expo)
+char	*get_key_exp(t_list *exp, char *key)
 {
-	char 	**tmp2;
-	char 	*tmp;
-	char	*tmp3;
-	t_list *head = *expo;
-	while (head)
-	{
-		tmp2 = ft_split(head->content, '=');
-		if (!ft_strncmp(tmp2[0], "PWD", ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen("PWD"))
-		{
-			tmp = ft_substr(head->content, 0, ft_strlen("PWD="));
-            tmp3 = ft_strjoin(tmp, getcwd(NULL, 0));
-            head->content = tmp3;
-            free(tmp);
-		}
-		free_tabb(tmp2);
-		head = head->next;
-	}
-}
-void	ft_oldpwd(t_list **expo)
-{
-	char 	**tmp2;
-	char 	*tmp;
-	char 	*tmp3;
-	t_list *head = *expo;
-	while (head)
-	{
-		tmp2 = ft_split(head->content, '=');
-		if (!ft_strncmp(tmp2[0], "OLDPWD", ft_strlen(tmp2[0])) && ft_strlen(tmp2[0]) == ft_strlen("OLDPWD"))
-		{
-			tmp = ft_substr(head->content, 0, ft_strlen("OLDPWD="));
-            tmp3 = ft_strjoin(tmp, getcwd(NULL, 0));
-            head->content = tmp3;
-            free(tmp);
-		}
-		free_tabb(tmp2);
-		head = head->next;
-	}
-}
+	char	**tmp2;
+	t_list *head;
 
-char *get_key_exp(t_list *exp, char *key)
-{
-	char **tmp2;
-
-	while (exp)
+	head = exp;
+	while (head )
 	{
-		tmp2 = ft_split(exp->content, '=');
+		tmp2 = ft_split(head ->content, '=');
 		if (!ft_strncmp(key, tmp2[0], ft_strlen(key)))
-			return tmp2[1];
+			return (tmp2[1]);
 		free_tabb(tmp2);
-		exp = exp->next;
+		head  = head ->next;
 	}
 	return (NULL);
 }
 
-void	my_cd(t_arg *cmd, t_list **expo, t_list  **env)
+void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
 {
-	t_list *tmp = *expo;
-	t_list *tmp2 = *env;
-	ft_oldpwd(&tmp);
-	ft_oldpwd(&tmp2);
+	t_list	*tmp;
+	t_list	*tmp2;
+
+	tmp = expo;
+	tmp2 = env;
+	ft_oldpwd(tmp);
+	ft_oldpwd(tmp2);
+	if (!getcwd(NULL, 0))
+	{
+		printf("cd: error retrieving current directory: getcwd: cannot parent\
+ directories: No such file or directory\n");
+		return ;
+	}
 	if (cmd->arg[1])
 	{
 		if (chdir(cmd->arg[1]) == -1)
@@ -83,18 +54,16 @@ void	my_cd(t_arg *cmd, t_list **expo, t_list  **env)
 	}
 	else
 	{
-		if (chdir(get_key_exp((*expo), "HOME")) == -1)
+		if (chdir(get_key_exp((expo), "HOME")) == -1)
 		{
 			printf("cd: HOME not set\n");
 			g_ext_s = 1;
 		}
-
 	}
-	g_ext_s = 0;
-	tmp = *expo;
-	tmp2 = *env;
-	ft_pwd(&tmp);
-	ft_pwd(&tmp2);
+	tmp = expo;
+	tmp2 = env;
+	ft_pwd(tmp);
+	ft_pwd(tmp2);
 }
 
 void	my_env(t_list *env_list)
@@ -107,19 +76,24 @@ void	my_env(t_list *env_list)
 	}
 }
 
-void	my_pwd(void)
+void	my_pwd(t_list *export_list)
 {
 	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
-	printf ("%s\n", pwd);
+	if (!pwd)
+	{
+		printf("%s\n", get_key_exp(export_list, "PWD"));
+		return ;
+	}
+	printf("%s\n", pwd);
 }
 
 void	my_exit(t_arg *cmd)
 {
 	printf("exit\n");
 	if (cmd->arg[1])
-		exit (ft_atoi(cmd->arg[1]));
+		exit(ft_atoi(cmd->arg[1]));
 	else
-		exit (0);
+		exit(0);
 }

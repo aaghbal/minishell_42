@@ -74,33 +74,42 @@ int ft_parsing(char *tmp)
 	return (0);
 }
 
-int	ft_parsing_2(t_token **token)
+int	ft_pars_last(t_token **token)
 {
-	t_token *tmp;
-	t_token *tmp1;
-	t_token *tmp2;
+	t_token	*tmp1;
+	t_token	*tmp2;
+	char	*str;
 
-	char *str = NULL;
-	tmp = *token;
+	str = NULL;
 	tmp1 = *token;
 	tmp2 = ft_tokenlast(tmp1);
-	int c = 1;
 	if (tmp1->cmd != NULL)
 	{
 		str = get_token(tmp2->cmd);
 		if (str)
-			return (free(str), 1);
+			return (1);
 	}
+	return (0);
+}
+
+int	ft_parsing_2(t_token **token)
+{
+	t_token	*tmp;
+	char	*str;
+	int		c;
+
+	str = NULL;
+	tmp = *token;
+	c = 1;
+	if (ft_pars_last(token))
+		return (free(str), 1);
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
-		{
 			return (1);
-		}
+		if (get_token_pars(tmp->cmd) && get_token_pars(tmp->next->cmd))
+			return (1);
 		c = 0;
-		if (get_token_pars(tmp->cmd)
-		&& get_token_pars(tmp->next->cmd))
-			return (1);
 		tmp = tmp->next;
 	}
 	return (0);

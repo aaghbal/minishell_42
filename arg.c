@@ -39,18 +39,6 @@ t_arg	*ft_arglast(t_arg *lst)
 	return (lst);
 }
 
-t_arg * newarg_token(char *cmd, t_type type)
-{
-	t_arg *node;
-
-	node = (t_arg *)malloc(sizeof(t_arg));
-	node->cmd = ft_strdup(cmd);
-	node->arg = alloc_arg(NULL, cmd);
-	node->type = type;
-	node->redfile = NULL;
-	node->next = NULL;
-	return (node);
-}
 
 void	ft_argadd_back(t_arg **lst, t_arg *new)
 {
@@ -71,7 +59,7 @@ void	ft_argadd_back(t_arg **lst, t_arg *new)
 void	append_word(t_token **tmp, t_arg **arg)
 {
 		t_arg *tmp2;
-		while ((*tmp) && (*tmp)->type == tokenword)
+		while (((*tmp) && ((*tmp)->type == tokenword || (*tmp)->key == 1)))
 		{
 			tmp2 = ft_arglast(*arg);
 			tmp2->arg = alloc_arg(tmp2->arg, (*tmp)->cmd);
@@ -83,9 +71,10 @@ void	apend_redirection(t_token **tmp, t_arg **arg)
 {
 	t_arg *red = newarg_token((*tmp)->cmd, (*tmp)->type);
 	(*tmp) = (*tmp)->next;
-	if ((*tmp) && !get_token((*tmp)->cmd))
+	if ((*tmp) &&(!get_token((*tmp)->cmd) || (*tmp)->key) == 1)
 	{
 		red->redfile = ft_strdup((*tmp)->cmd);
+		free((*tmp)->cmd);
 	}
 	if ((*tmp) && ft_strncmp((*tmp)->cmd, "<<", 3))
 	{
@@ -102,23 +91,22 @@ void	is_arg(t_token *tmp, t_arg **arg)
 {
 	while (tmp)
 	{
-		if (tmp->type == tokenword)
+		if (tmp->type == tokenword || tmp->key == 1)
 		{
-			if (tmp && tmp->type == tokenword)
+			if ((tmp && tmp->type == tokenword ) || tmp->key == 1)
 			{
-
 				ft_argadd_back(arg, newarg_token((tmp)->cmd, (tmp)->type));
 				(tmp) = (tmp)->next;
 				append_word(&tmp, arg);
 			}
-			if (tmp && tmp->type == redirections)
+			if (tmp && tmp->type == redirections && tmp->key == 0)
 				apend_redirection(&tmp, arg);
 		}
 		else
 		{
 			if (tmp)
 			{
-				if (!(ft_strncmp(tmp->cmd,"<<", 3)))
+				if (!(ft_strncmp(tmp->cmd,"<<", 3)) && tmp->key == 0)
 					apend_redirection(&tmp, arg);
 				else
 				{
@@ -142,25 +130,19 @@ void	is_arg(t_token *tmp, t_arg **arg)
 
  void	free_list(t_token *tabb)
 {
-	t_token *tok;
-
-	tok = NULL;
 	while (tabb)
-	{	
+	{
 		free(tabb->cmd);
-		tabb->cmd = NULL;
-		tok = tabb;
+		free(tabb);
 		tabb = tabb->next;
-		free(tok);
 	}
+	free(tabb);
 }
  void	free_arg(t_arg *str)
 {
 	while (str)
 	{
-		if (str->cmd)
-			free(str->cmd);
-		str->cmd = NULL;
+		free(str->cmd);
 		free_tabb(str->arg);
 		free(str);
 		if (str->redfile)

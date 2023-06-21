@@ -6,17 +6,11 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/26 12:59:21 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/05/26 13:02:27 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/20 20:27:05 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "minishell.h"
 
-void	add_free(t_data *data, t_token **token)
-{
-	ft_tokenadd_back(token, new_token(data->str, get_type(data->str)));
-	free(data->str);
-	data->str= NULL;
-}
+#include "minishell.h"
 
 int	get_next_pip(t_arg *arg)
 {

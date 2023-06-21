@@ -11,47 +11,23 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-t_token * new_token(char *cmd, t_type type)
+char	*get_token(char *line)
 {
-	t_token * node;
+	int	i;
 
-	node = (t_token *)malloc(sizeof(t_token));
-	if (node == NULL)
-		return (NULL);
-	node->cmd = ft_strdup(cmd);
-	if (type == NONE)
-		return (NULL);
-	node->type = type;
-	node->next = NULL;
-	return (node);
-}
-
-
-char *get_token(char *line)
-{
-	int i;
-	
 	if (!line)
 		return (NULL);
 	i = 0;
-	if (line[i] && (line[i] == '|' || line[i] == '<' || line[i] == '>') 
+	if (line[i] && (line[i] == '|' || line[i] == '<' || line[i] == '>')
 		&& (line[i + 1] != '<' && line[i + 1] != '>'))
-		return ft_substr(line, 0, 1);
+		return (ft_substr(line, 0, 1));
 	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<')
-	|| (line[i] == '>' && line[i + 1] == '>')))
-		return ft_substr(line, 0, 2);
-	return NULL;
+				|| (line[i] == '>' && line[i + 1] == '>')))
+		return (ft_substr(line, 0, 2));
+	return (NULL);
 }
 
-
-void	is_token(t_data *data, char *line)
-{
-	data->str = get_token(&line[(data->i)++]);
-	if (ft_strlen(data->str) == 2)
-		(data->i)++;
-}
-
-void	ft_tokenization(t_token	**token, t_data *data, t_list *export_list, char *line)
+void	tokenization(t_token **tok, t_data *data, t_list *exp_list, char *line)
 {
 	while (line[data->i])
 	{
@@ -60,18 +36,46 @@ void	ft_tokenization(t_token	**token, t_data *data, t_list *export_list, char *l
 		if (check_token(line[data->i]))
 			is_token(data, line);
 		else if (line[data->i] == '\"')
-			data->str = double_quotes(line, data->str, &(data->i), export_list);
+			data->str = double_quotes(line, data->str, &(data->i), exp_list);
 		else if (line[data->i] == '\'')
 			data->str = single_quotes(line, data->str, &(data->i));
 		else
-			default_cmd(data, line, export_list);
+			default_cmd(data, line, exp_list);
 		if (data->str)
-			add_free(data, token);
+			add_free(data, tok, line);
 	}
 }
-int 	parsing_3(char *line)
+void	ft_pars_nor(char *line, int *i, int *c)
 {
-	int i;
+	if (line[*i] == '\'')
+	{
+		(*i)++;
+		while (line[*i] && line[*i] != '\'')
+			(*i)++;
+		*c = 1;
+	}
+	if (line[*i] == '\"')
+	{
+		(*i)++;
+		while (line[*i] && line[*i] != '\"')
+			(*i)++;
+		*c = 1;
+	}
+	if (((line[*i] == '<' && line[*i + 1] == '<') || (line[*i] == '<' && line[*i
+				+ 1] == '<')))
+		*c = 0;
+	else if ((line[*i] == '<' || line[*i] == '>' || line[*i] == '|'))
+	{
+		*c = 0;
+		(*i)++;
+	}
+	else
+		(*i)++;
+}
+
+int	parsing_3(char *line)
+{
+	int	i;
 	int	c;
 
 	i = 0;
@@ -91,23 +95,15 @@ int 	parsing_3(char *line)
 					i++;
 			}
 		}
-		if ((line[i] == '<' && line[i + 1] == '<' )|| (line[i] == '<' && line[i + 1] == '<'))
-			c = 0;
-		else if (line[i] == '<' || line[i] == '>' || line[i] == '|')
-		{
-			c = 0;
-			i++;
-		}
-		else
-			i++;
+		ft_pars_nor(line, &i, &c);
 	}
-	return(c);
+	return (c);
 }
 
-int  token_line(char *line, t_list *export_list, t_list *env_list)
+int	token_line(char *line, t_list *export_list, t_list *env_list)
 {
-	t_data *data;
-	t_arg *arg;
+	t_data	*data;
+	t_arg	*arg;
 	t_token	*token;
 
 	data = malloc(sizeof(t_data));
@@ -115,14 +111,14 @@ int  token_line(char *line, t_list *export_list, t_list *env_list)
 	token = NULL;
 	data->i = 0;
 	data->str = NULL;
-	ft_tokenization(&token, data, export_list, line);
+	tokenization(&token, data, export_list, line);
 	if (ft_parsing_2(&token) && !parsing_3(line))
-		return(free(line), free_list(token), free(data), 1);
+		return (1);
 	is_arg(token, &arg);
+	// free(line);
+	// free(data);
+	// free_list(token);
 	execute(arg, export_list, env_list);
-	free(line);
-	free(data);
-	free_list(token);
-	free_arg(arg);
-	return(0);
+	// free_arg(arg);
+	return (0);
 }

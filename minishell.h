@@ -59,6 +59,7 @@ typedef struct s_arg{
 
 typedef struct s_token{
 	char			*cmd;
+	char			key;
 	t_type			type;
 	struct s_token	*next;
 }	t_token;
@@ -72,9 +73,9 @@ typedef struct s_data
 /*---commands---*/
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
-void	my_pwd(void);
+void	my_pwd(t_list *export_list);
 void	my_exit(t_arg *cmd);
-void	my_cd(t_arg *cmd, t_list **expo, t_list **env);
+void	my_cd(t_arg *cmd, t_list *expo, t_list *env);
 void	my_unset(char *cmd, t_list *export_list, t_list *env_list);
 void	my_exec_cmd(t_arg *cmd, int pi);
 void	execute(t_arg *tmp, t_list *export_list, t_list *env_list);
@@ -94,23 +95,35 @@ void	close_file(int file_d, int fd[2]);
 int		reset(int pid);
 int		parent(int file_d, int s, int fd[2]);
 int		hered_check(t_arg *tmp);
-int		redirect_inpt(t_arg *tmp);
+int		redirect_inpt(t_arg *tmp, int fd[2]);
 int		get_next_inptred(t_arg *arg);
 char	*export_pars(t_list *export_list, char *var);
 char	*add_var(t_list *export_list, char *var);
+void	multi_red(t_arg *tmp);
+int		execute_child(t_arg *tmp, int fd[2], int fd2[2], int s);
+int		execute_parent(t_arg *tmp, int fd[2], int fd2[2], int s);
+t_arg	*if_unset(t_arg *tmp, t_list *export_list, t_list *env_list);
+t_arg	*if_export(t_arg *tmp, t_list *export_list, t_list *env_list);
+void	ft_pwd(t_list *expo);
+void	ft_oldpwd(t_list *expo);
+int		hered_check(t_arg *tmp);
+char	**alloc(t_arg	*file);
+char	**list_to_tabs(t_list *list);
+char *get_key_exp(t_list *exp, char *key);
 
 /*---signals---*/
 void	sighandler(int signal);
 void	sighandler_child(int signal);
+void	sighandler_child2(int signal);
 
 /*---parsing---*/
 t_token	*ft_tokenlast(t_token *lst);
-t_token	*new_token(char *cmd, t_type type);
+t_token * new_token(char *cmd, t_type type, int k);
 t_arg	*newarg_token(char *cmd, t_type type);
 t_arg	*ft_arglast(t_arg *lst);
 t_type	get_type(char *str);
 void	ft_tokenadd_back(t_token **lst, t_token *new);
-void	add_free(t_data *data, t_token **token);
+void	add_free(t_data *data, t_token **token, char *line);
 void	ft_argadd_back(t_arg **lst, t_arg *new);
 void	is_token(t_data *data, char *line);
 void	default_cmd(t_data *data, char *line, t_list *expo);
@@ -142,6 +155,10 @@ int		get_token_pars(char *line);
 int		check_line_2(char *str);
 int		check_line(char *str);
 int		parsing(char *str);
- void	free_arg(t_arg *str);
+void	free_arg(t_arg *str);
+int		r_inpt(t_arg *tmp, int fd[2], int fd2[2]);
+int		current_pipe(t_arg *tmp, int fd[2], int fd2[2], int s);
+int		execute_hered(t_arg *tmp, int fd[2], int fd2[2]);
+t_arg	*first_redirect(t_arg *tmp);
 
 #endif

@@ -33,29 +33,28 @@ void	print_epxport(t_list *export_list)
 			printf("%c", tmp[i]);
 		}
 		printf("\n");
+		free(tmp);
 		export_list = export_list->next;
 	}
 }
 
-int	export_empty(t_list *export_list, t_list *env_list, char *var)
+void	export_empty(t_list *export_list, t_list *env_list, char *var)
 {
 	int	i;
 
 	i = 0;
-	char *tmp = ft_strdup(var);
-	while (tmp[++i])
+	while (var[++i])
 	{
-		if (tmp[i] == '=' && tmp[i + 1] == '\0')
+		if (var[i] == '=')
 		{
-
-			ft_lstadd_back(&export_list, ft_lstnew(tmp));
-			ft_lstadd_back(&env_list, ft_lstnew(tmp));
-			return (0);
+			ft_lstadd_back(&export_list, ft_lstnew(var));
+			ft_lstadd_back(&env_list, ft_lstnew(var));
+			return ;
 		}
-		else if (!tmp[i + 1])
-			ft_lstadd_back(&export_list, ft_lstnew(tmp));
+		else if (!var[i + 1])
+			ft_lstadd_back(&export_list, ft_lstnew(var));
 	}
-	return (1);
+	return ;
 }
 
 char	*add_var(t_list *export_list, char *var)
@@ -116,8 +115,6 @@ int	same_var(t_list *export_list, t_list *env_list, char *var)
 
 void	my_export(t_list *export_list, t_list *env_list, char *var)
 {
-	int		i;
-
 	if (var)
 	{
 		var = export_pars(export_list, var);
@@ -125,19 +122,9 @@ void	my_export(t_list *export_list, t_list *env_list, char *var)
 			return ;
 		if (!same_var(export_list, env_list, var))
 			return ;
-		if (!export_empty(export_list, env_list, var))
-			return ;
-		i = 0;
-		while (var[++i])
-		{
-			if (var[i] == '=' && var[i - 1] != ' '
-				&& var[i + 1] != ' ' && var[i + 1] != '\0')
-			{
-				ft_lstadd_back(&env_list, ft_lstnew(var));
-				return ;
-			}
-		}
+		export_empty(export_list, env_list, var);
 		return ;
 	}
-	print_epxport(export_list);
+	else
+		print_epxport(export_list);
 }
