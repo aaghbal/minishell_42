@@ -16,6 +16,8 @@ void	print_epxport(t_list *export_list)
 	char	*tmp;
 	int		i;
 
+	if (!ft_strncmp("__Head", export_list->content, 7))
+		export_list = export_list->next;
 	while (export_list)
 	{
 		printf("declare -x ");
@@ -43,19 +45,18 @@ void	export_empty(t_list *export_list, t_list *env_list, char *var)
 	int		i;
 	char	*tmp;
 
-
 	i = 0;
 	tmp = ft_strdup(var);
 	while (var[++i])
 	{
 		if (var[i] == '=')
 		{
-			ft_lstadd_back(&export_list, ft_lstnew(tmp));
-			ft_lstadd_back(&env_list, ft_lstnew(tmp));
+			ft_lstadd_back(&export_list, ft_lstnew(tmp, 1));
+			ft_lstadd_back(&env_list, ft_lstnew(tmp, 1));
 			return ;
 		}
 		else if (!var[i + 1])
-			ft_lstadd_back(&export_list, ft_lstnew(tmp));
+			ft_lstadd_back(&export_list, ft_lstnew(tmp, 1));
 	}
 	return ;
 }
@@ -64,6 +65,7 @@ char	*add_var(t_list *export_list, char *var)
 {
 	char	**tmp2;
 	char	**tmp3;
+	char	*tmp;
 
 	tmp3 = ft_split(var, '+');
 	while (export_list)
@@ -75,24 +77,17 @@ char	*add_var(t_list *export_list, char *var)
 			if (tmp3[1] && tmp3[1][1] != '\0')
 			{
 				var = ft_strjoin(export_list->content, tmp3[1] + 1);
-				free_tabb(tmp2);
-				free_tabb(tmp3);
-				free (export_list->content);
-				return (var);
+				return (free_tabb(tmp2), free_tabb(tmp3), var);
 			}
-			char *s = ft_strjoin(tmp3[0], tmp3[1]);
-			free_tabb(tmp2);
-			free_tabb(tmp3);
-			printf("%s\n", s);
-			return (s);
+			tmp = ft_strjoin(tmp3[0], tmp3[1]);
+			return (free_tabb(tmp2), free_tabb(tmp3), tmp);
 		}
 		free_tabb(tmp2);
 		export_list = export_list->next;
 	}
-	char *s = ft_strjoin(tmp3[0], tmp3[1]);
+	tmp = ft_strjoin(tmp3[0], tmp3[1]);
 	free_tabb(tmp3);
-	printf("%s\n", s);
-	return (s);
+	return (tmp);
 }
 
 int	same_var(t_list *export_list, t_list *env_list, char *var)
@@ -110,33 +105,30 @@ int	same_var(t_list *export_list, t_list *env_list, char *var)
 			&& ft_strlen(tmp3[0]) == ft_strlen(tmp2[0]))
 		{
 			if (!tmp3[1] && var[ft_strlen(var) - 1] != '=')
-			{
-				free_tabb(tmp2);
-				free_tabb(tmp3);
-				return (0);
-			}
+				return (free_tabb(tmp2), free_tabb(tmp3), 0);
 			my_unset(tmp2[0], export_list, env_list);
-			free_tabb(tmp2);
-			free_tabb(tmp3);
-			return (1);
+			return (free_tabb(tmp2), free_tabb(tmp3), 1);
 		}
 		free_tabb(tmp2);
 		tmp = tmp->next;
 	}
-	free_tabb(tmp3);
-	return (1);
+	return (free_tabb(tmp3), 1);
 }
 
 void	my_export(t_list *export_list, t_list *env_list, char *var)
 {
+	char	*tmp;
+
 	if (var)
 	{
-		var = export_pars(export_list, var);
-		if (!var)
+		tmp = export_pars(export_list, var);
+		if (!tmp)
 			return ;
-		if (!same_var(export_list, env_list, var))
+		if (!same_var(export_list, env_list, tmp))
 			return ;
-		export_empty(export_list, env_list, var);
+		export_empty(export_list, env_list, tmp);
+		if (var != tmp)
+			free(tmp);
 		return ;
 	}
 	else

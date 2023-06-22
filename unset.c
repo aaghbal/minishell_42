@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 void	unset_export(char *cmd, t_list *export_list)
 {
 	t_list	*tmp;
@@ -23,7 +24,8 @@ void	unset_export(char *cmd, t_list *export_list)
 				|| !ft_strncmp(tmp->content + ft_strlen(cmd), "\0", 1)))
 		{
 			export_list->next = tmp->next;
-			free(tmp->content);
+			if (tmp->type)
+				free(tmp->content);
 			free(tmp);
 			tmp = NULL;
 			break ;
@@ -44,7 +46,6 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 			&& !ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))
 		{
 			env_list->next = tmp->next;
-			free(tmp->content);
 			free(tmp);
 			tmp = NULL;
 			break ;
@@ -55,10 +56,10 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 	unset_export(cmd, export_list);
 }
 
-void	add_free(t_data *data, t_token **token, char *line)
+void	add_free2(t_data *data, t_token **token)
 {
-	int i = 0;
-	static int key = 0;
+	static int	key;
+
 	if (key == 1)
 	{
 		ft_tokenadd_back(token, new_token(data->str, get_type(data->str), key));
@@ -66,6 +67,15 @@ void	add_free(t_data *data, t_token **token, char *line)
 	}
 	else
 		ft_tokenadd_back(token, new_token(data->str, get_type(data->str), key));
+}
+
+void	add_free(t_data *data, t_token **token, char *line)
+{
+	static int	key;
+	int			i;
+
+	i = 0;
+	add_free2(data, token);
 	if (!ft_strncmp(data->str, "echo", 4) || get_token_pars(data->str))
 	{
 		i = data->i;
@@ -73,7 +83,7 @@ void	add_free(t_data *data, t_token **token, char *line)
 		{
 			if (line[i] == ' ' || line[i] == '\t')
 				i++;
-			else 
+			else
 			{
 				if (line[i] == '\"' || line[i] == '\"')
 					key = 1;
@@ -82,8 +92,9 @@ void	add_free(t_data *data, t_token **token, char *line)
 		}
 	}
 	free(data->str);
-	data->str= NULL;
+	data->str = NULL;
 }
+
 void	is_token(t_data *data, char *line)
 {
 	data->str = get_token(&line[(data->i)++]);

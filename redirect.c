@@ -33,11 +33,11 @@ void	multi_red(t_arg *tmp)
 	while (tmp2->next && tmp2->next->cmd[0] == '>')
 	{
 		if (tmp2->next->cmd[1] == '>')
-			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR
-					| O_APPEND, 0644);
+			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR | O_APPEND,
+					0644);
 		else
-			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR
-					| O_TRUNC, 0644);
+			file_d = open(tmp2->next->redfile, O_CREAT | O_RDWR | O_TRUNC,
+					0644);
 		close(file_d);
 		tmp2 = tmp2->next;
 	}

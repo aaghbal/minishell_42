@@ -11,10 +11,11 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-char *append_char(char *str, char c)
+char	*append_char(char *str, char c)
 {
-	char *res;
-	char tmp[2];
+	char	*res;
+	char	tmp[2];
+
 	if (!str)
 	{
 		res = malloc(sizeof(char) * 2);
@@ -28,17 +29,17 @@ char *append_char(char *str, char c)
 		res = ft_strjoin(str, tmp);
 		free(str);
 	}
-	return res;
+	return (res);
 }
 
-int check_token(char c)
+int	check_token(char c)
 {
 	if (c == '|' || c == '<' || c == '>')
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }
 
-t_type get_type(char *str)
+t_type	get_type(char *str)
 {
 	if (!str)
 		return (NONE);
@@ -57,7 +58,6 @@ t_token	*ft_tokenlast(t_token *lst)
 		lst = lst->next;
 	return (lst);
 }
-
 
 void	ft_tokenadd_back(t_token **lst, t_token *new)
 {

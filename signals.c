@@ -27,7 +27,7 @@ void	sighandler(int signal)
 	else if (signal == 11)
 	{
 		write(1, "exit\n", 5);
-		exit (0);
+		exit(0);
 	}
 }
 
@@ -37,9 +37,9 @@ void	sighandler_child(int signal)
 		return ;
 }
 
-t_token * new_token(char *cmd, t_type type, int k)
+t_token	*new_token(char *cmd, t_type type, int k)
 {
-	t_token * node;
+	t_token	*node;
 
 	node = (t_token *)malloc(sizeof(t_token));
 	if (node == NULL)
@@ -53,9 +53,9 @@ t_token * new_token(char *cmd, t_type type, int k)
 	return (node);
 }
 
-t_arg * newarg_token(char *cmd, t_type type)
+t_arg	*newarg_token(char *cmd, t_type type)
 {
-	t_arg *node;
+	t_arg	*node;
 
 	node = (t_arg *)malloc(sizeof(t_arg));
 	node->cmd = ft_strdup(cmd);

@@ -18,7 +18,7 @@ char	*export_addpars(t_list *export_list, char *var, int i)
 		return (add_var(export_list, var));
 	else
 	{
-		printf ("export: %s: not a valid identifier\n", var);
+		printf("export: %s: not a valid identifier\n", var);
 		return (NULL);
 	}
 }
@@ -40,7 +40,7 @@ char	*export_pars(t_list *export_list, char *var)
 		{
 			if (!ft_isalnum(var[i - 1]))
 			{
-				printf ("export: %s: not a valid identifier\n", var);
+				printf("export: %s: not a valid identifier\n", var);
 				return (NULL);
 			}
 			else

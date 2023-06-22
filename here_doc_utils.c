@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	**alloc(t_arg	*file)
+char	**alloc(t_arg *file)
 {
 	int		i;
 	char	**delem;

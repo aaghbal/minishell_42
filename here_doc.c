@@ -53,7 +53,7 @@ void	here_doc3(t_arg *tmp, t_arg *file, int fd[2])
 
 int	here_doc2(t_arg *tmp, int fd[2], t_arg *file, t_arg *file_out)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	here_doc3(tmp, file, fd);

@@ -12,7 +12,7 @@ int	execute_child(t_arg *tmp, int fd[2], int fd2[2], int s)
 	if (tmp && tmp->cmd[0] == '|')
 	{
 		s = current_pipe(tmp, fd, fd2, s);
-		exit (0);
+		exit(0);
 	}
 	if (tmp && tmp->next && tmp->next->cmd[0] == '|')
 		dup2(fd[1], STDOUT_FILENO);
@@ -32,8 +32,8 @@ int	execute_child(t_arg *tmp, int fd[2], int fd2[2], int s)
 int	execute_parent(t_arg *tmp, int fd[2], int fd2[2], int s)
 {
 	close_file(0, fd2);
-	if (!tmp->next || (tmp->cmd[0] == '|'
-			&& tmp->next->cmd[0] == '>' && !tmp->next->next->next)) //???a
+	if (!tmp->next || (tmp->cmd[0] == '|' && tmp->next->cmd[0] == '>'
+			&& !tmp->next->next->next)) //???a
 	{
 		close_file(0, fd2);
 		close_file(0, fd);

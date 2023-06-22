@@ -69,5 +69,5 @@ int	execute_hered(t_arg *tmp, int fd[2], int fd2[2])
 	if (tmp->cmd[0] != '<')
 		return (1);
 	else
-		exit (0);
+		exit(0);
 }

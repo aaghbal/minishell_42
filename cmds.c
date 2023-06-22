@@ -20,7 +20,7 @@ char	*get_key_exp(t_list *exp, char *key)
 	head = exp;
 	while (head)
 	{
-		tmp2 = ft_split(head ->content, '=');
+		tmp2 = ft_split(head->content, '=');
 		if (!ft_strncmp(key, tmp2[0], ft_strlen(key)))
 			return (tmp2[1]);
 		free_tabb(tmp2);
@@ -68,6 +68,8 @@ void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
 
 void	my_env(t_list *env_list)
 {
+	if (!ft_strncmp("__Head", env_list->content, 7))
+		env_list = env_list->next;
 	while (env_list)
 	{
 		if (env_list->content)
@@ -89,11 +91,21 @@ void	my_pwd(t_list *export_list)
 	printf("%s\n", pwd);
 }
 
-void	my_exit(t_arg *cmd)
+t_arg	*my_exit(t_arg *cmd)
 {
-	printf("exit\n");
-	if (cmd->arg[1])
-		exit(ft_atoi(cmd->arg[1]));
+	if (cmd->arg[2])
+	{
+		printf("exit\n");
+		printf("minishell: exit: too many arguments\n");
+		cmd = cmd->next;
+	}
 	else
-		exit(0);
+	{
+		printf("exit\n");
+		if (cmd->arg[1])
+			exit(ft_atoi(cmd->arg[1]));
+		else
+			exit(0);
+	}
+	return (cmd);
 }

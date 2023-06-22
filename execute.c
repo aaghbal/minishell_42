@@ -64,6 +64,13 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 {
 	if (tmp && tmp->cmd[0] == '>')
 		tmp = first_redirect(tmp);
+	if (tmp && !ft_strncmp(tmp->cmd, "<", 2))
+	{
+		if (access(tmp->next->cmd, R_OK))
+			printf("minishell: %s: No such file or directory\n",
+					tmp->next->cmd);
+		tmp = tmp->next->next;
+	}
 	while (tmp)
 	{
 		if (tmp && tmp->cmd[0] == '|')
@@ -78,7 +85,7 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 		else if (tmp && (tmp->cmd[0] == '>' || !ft_strncmp(tmp->cmd, "<", 2)))
 			tmp = tmp->next;
 		else if (tmp && !ft_strncmp(tmp->cmd, "exit", 5))
-			my_exit(tmp);
+			tmp = my_exit(tmp);
 		else
 			tmp = exe1(tmp, export_list, env_list);
 	}

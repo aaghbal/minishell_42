@@ -34,9 +34,9 @@ char	**list_to_tabs(t_list *list)
 void	ft_error(char *cmd)
 {
 	if (cmd[0] == '.' && cmd[1] == '/')
-		exit (126);
+		exit(126);
 	else
-		exit (127);
+		exit(127);
 }
 
 void	ft_execve(char **str, t_arg *cmd, char **env)

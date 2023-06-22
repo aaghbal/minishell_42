@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content)
+t_list	*ft_lstnew(void *content, int type)
 {
 	t_list	*lstnew;
 
@@ -19,6 +19,7 @@ t_list	*ft_lstnew(void *content)
 	if (!lstnew)
 		return (NULL);
 	lstnew->content = content;
+	lstnew->type = type;
 	lstnew->next = NULL;
 	return (lstnew);
 }

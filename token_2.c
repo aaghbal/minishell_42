@@ -22,7 +22,7 @@ char	*get_token(char *line)
 		&& (line[i + 1] != '<' && line[i + 1] != '>'))
 		return (ft_substr(line, 0, 1));
 	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<')
-				|| (line[i] == '>' && line[i + 1] == '>')))
+			|| (line[i] == '>' && line[i + 1] == '>')))
 		return (ft_substr(line, 0, 2));
 	return (NULL);
 }
@@ -45,11 +45,11 @@ void	tokenization(t_token **tok, t_data *data, t_list *exp_list, char *line)
 			add_free(data, tok, line);
 	}
 }
+
 void	ft_pars_nor(char *line, int *i, int *c)
 {
-
-	if (((line[*i] == '<' && line[*i + 1] == '<') || (line[*i] == '<' 
-	&& line[*i+ 1] == '<')))
+	if (((line[*i] == '<' && line[*i + 1] == '<') || (line[*i] == '<'
+				&& line[*i + 1] == '<')))
 		*c = 0;
 	else if ((line[*i] == '<' || line[*i] == '>' || line[*i] == '|'))
 	{
@@ -74,7 +74,8 @@ int	parsing_3(char *line)
 			i += 2;
 			while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 				i++;
-			if (line[i] == '\"' && line[i + 1] == '\"')
+			if ((line[i] == '\"' && line[i + 1] == '\"')
+				|| (line[i] == '\'' && line[i + 1] == '\''))
 			{
 				i += 2;
 				c++;
@@ -100,14 +101,11 @@ int	token_line(char *line, t_list *export_list, t_list *env_list)
 	data->str = NULL;
 	tokenization(&token, data, export_list, line);
 	if (ft_parsing_2(&token) && !parsing_3(line))
-		return (1);
+		return (free(line), free(data), free_list(token), 1);
 	is_arg(token, &arg);
-	if (line)
-		free(line);
-	if (data)
-		free(data);
-	if (token)
-		free_list(token);
+	free(line);
+	free(data);
+	free_list(token);
 	execute(arg, export_list, env_list);
 	free_arg(arg);
 	return (0);

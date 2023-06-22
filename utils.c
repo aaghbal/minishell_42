@@ -14,7 +14,7 @@
 
 int	get_next_pip(t_arg *arg)
 {
-	int c;
+	int	c;
 
 	c = 0;
 	while (arg)
@@ -23,12 +23,12 @@ int	get_next_pip(t_arg *arg)
 			c++;
 		arg = arg->next;
 	}
-	return(c);
+	return (c);
 }
 
 int	get_next_red(t_arg *arg)
 {
-	int c;
+	int	c;
 
 	c = 0;
 	while (arg)
@@ -37,12 +37,12 @@ int	get_next_red(t_arg *arg)
 			c++;
 		arg = arg->next;
 	}
-	return(c);
+	return (c);
 }
 
 int	get_next_inptred(t_arg *arg)
 {
-	int c;
+	int	c;
 
 	c = 0;
 	while (arg)
@@ -51,14 +51,14 @@ int	get_next_inptred(t_arg *arg)
 			c++;
 		arg = arg->next;
 	}
-	return(c);
+	return (c);
 }
 
-int is_char(char c)
+int	is_char(char c)
 {
 	if (c == ' ' || c == '\t' || check_token(c))
 		return (1);
-	return(0);
+	return (0);
 }
 
 int	check_line_2(char *str)
@@ -68,8 +68,7 @@ int	check_line_2(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] != ' ' && str[i] != '\"'
-			&& str[i] != '\'' && str[i] != '\t')
+		if (str[i] != ' ' && str[i] != '\"' && str[i] != '\'' && str[i] != '\t')
 			return (0);
 		i++;
 	}

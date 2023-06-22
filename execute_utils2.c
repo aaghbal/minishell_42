@@ -22,8 +22,8 @@ int	r_inpt(t_arg *tmp, int fd[2], int fd2[2])
 	file_d = redirect_inpt(tmp, fd);
 	if (file_d == -1)
 	{
-		printf ("minishell: %s: No such file or directory\n",
-			tmp->next->redfile);
+		printf("minishell: %s: No such file or directory\n",
+				tmp->next->redfile);
 		close_file(file_d, fd2);
 		close_file(file_d, fd);
 		exit(1);
@@ -35,7 +35,7 @@ t_arg	*first_redirect(t_arg *tmp)
 {
 	int	file_d;
 
-	if (tmp->next &&  tmp->cmd[0] == '>' && !tmp->redfile)
+	if (tmp->next && tmp->cmd[0] == '>' && !tmp->redfile)
 	{
 		file_d = open(tmp->next->cmd, O_CREAT | O_RDWR, 0644);
 		tmp = tmp->next;
@@ -43,7 +43,7 @@ t_arg	*first_redirect(t_arg *tmp)
 	else
 		file_d = open(tmp->redfile, O_CREAT | O_RDWR, 0644);
 	tmp = tmp->next;
-	close (file_d);
+	close(file_d);
 	return (tmp);
 }
 
