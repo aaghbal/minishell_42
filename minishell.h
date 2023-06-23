@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 09:43:16 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/06/23 12:31:37 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ typedef struct s_data
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
 void	my_pwd(t_list *export_list);
-t_arg   *my_exit(t_arg *cmd);
+t_arg	*my_exit(t_arg *cmd);
 void	my_cd(t_arg *cmd, t_list *expo, t_list *env);
 void	my_unset(char *cmd, t_list *export_list, t_list *env_list);
 void	my_exec_cmd(t_arg *cmd, int pi);
@@ -110,6 +110,7 @@ int		hered_check(t_arg *tmp);
 char	**alloc(t_arg	*file);
 char	**list_to_tabs(t_list *list);
 char	*get_key_exp(t_list *exp, char *key);
+void	signals(void);
 
 /*---signals---*/
 void	sighandler(int signal);

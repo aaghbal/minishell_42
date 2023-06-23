@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:16 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/05/14 04:52:17 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/06/23 12:31:44 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	sighandler(int signal)
@@ -64,4 +65,12 @@ t_arg	*newarg_token(char *cmd, t_type type)
 	node->redfile = NULL;
 	node->next = NULL;
 	return (node);
+}
+
+void	signals(void)
+{
+	rl_catch_signals = 0;
+	signal(3, sighandler);
+	signal(11, sighandler);
+	signal(2, sighandler);
 }

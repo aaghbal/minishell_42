@@ -50,7 +50,7 @@ int	get_token_pars(char *line)
 			&& line[i + 1] != '>'))
 		return (1);
 	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<')
-			|| (line[i] == '>' && line[i + 1] == '>')))
+				|| (line[i] == '>' && line[i + 1] == '>')))
 		return (1);
 	return (0);
 }

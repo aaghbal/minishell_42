@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:33:39 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/20 17:59:05 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/23 12:32:21 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,6 @@ void	ft_execve(char **str, t_arg *cmd, char **env)
 		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, env) == -1)
 			i++;
 	}
-}
-
-void	signals(void)
-{
-	rl_catch_signals = 0;
-	signal(3, sighandler);
-	signal(11, sighandler);
-	signal(2, sighandler);
 }
 
 int	check_line(char *str)
