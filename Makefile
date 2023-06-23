@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+         #
+#    By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/14 04:51:47 by zel-kach          #+#    #+#              #
-#    Updated: 2023/06/14 09:43:46 by zel-kach         ###   ########.fr        #
+#    Updated: 2023/06/23 22:48:50 by aaghbal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,3 +50,4 @@ fclean: clean libftfclean
 		${RM} ${NAME}
 
 re: fclean all
+
