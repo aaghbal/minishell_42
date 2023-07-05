@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:47 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/20 20:28:20 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/05 19:48:08 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,41 +56,37 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 	unset_export(cmd, export_list);
 }
 
-void	add_free2(t_data *data, t_token **token)
+void	add_free2(t_data *data, t_token **token, int *key)
 {
-	static int	key;
-
-	if (key == 1)
+	if (*key == 1)
 	{
-		ft_tokenadd_back(token, new_token(data->str, get_type(data->str), key));
-		key = 0;
+		ft_tokenadd_back(token, new_token(data->str,
+				get_type(data->str), *key));
 	}
 	else
-		ft_tokenadd_back(token, new_token(data->str, get_type(data->str), key));
+		ft_tokenadd_back(token, new_token(data->str,
+				get_type(data->str), *key));
 }
 
-void	add_free(t_data *data, t_token **token, char *line)
+void	add_free(t_data *data, t_token **token, char *line, int *c)
 {
-	static int	key;
-	int			i;
+	int	key;
+	int	i;
 
-	i = 0;
-	add_free2(data, token);
-	if (!ft_strncmp(data->str, "echo", 4) || get_token_pars(data->str))
+	key = 0;
+	i = *c;
+	while (line[i])
 	{
-		i = data->i;
-		while (line[i])
+		if (line[i] == ' ' || line[i] == '\t')
+			i++;
+		else
 		{
-			if (line[i] == ' ' || line[i] == '\t')
-				i++;
-			else
-			{
-				if (line[i] == '\"' || line[i] == '\"')
-					key = 1;
-				break ;
-			}
+			if (line[i] == '\"' || line[i] == '\'')
+				key = 1;
+			break ;
 		}
 	}
+	add_free2(data, token, &key);
 	free(data->str);
 	data->str = NULL;
 }

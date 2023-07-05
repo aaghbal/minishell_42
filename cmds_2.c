@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:28:26 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/23 22:28:58 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/03 16:45:30 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,29 @@ void	my_pwd(t_list *export_list)
 
 t_arg	*my_exit(t_arg *cmd)
 {
-	if (cmd->arg[2])
+	int	i;
+
+	i = -1;
+	if (cmd->arg[1])
 	{
-		printf("exit\n");
-		printf("minishell: exit: too many arguments\n");
-		cmd = cmd->next;
+		while (cmd->arg[1][++i])
+		{
+			if (!ft_isdigit(cmd->arg[1][i]))
+			{
+				printf("exit\nminishell: exit: numeric argument required\n");
+				exit (255);
+			}
+		}
+		if (cmd->arg[2])
+		{
+			printf("exit\nminishell: exit: too many arguments\n");
+			g_ext_s = 1;
+			cmd = cmd->next;
+		}
+		else
+			exit (ft_atoi(cmd->arg[1]));
 	}
 	else
-	{
-		printf("exit\n");
-		if (cmd->arg[1])
-			exit(ft_atoi(cmd->arg[1]));
-		else
-			exit(0);
-	}
+		exit(0);
 	return (cmd);
 }

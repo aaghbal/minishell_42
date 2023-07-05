@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:35 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 09:47:59 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:42:53 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	here_doc4(t_arg *tmp, int fd[2], int i, char **delimiter)
@@ -21,12 +22,15 @@ void	here_doc4(t_arg *tmp, int fd[2], int i, char **delimiter)
 		input = readline(">");
 		while (1)
 		{
+			if (!input)
+				exit(0);
 			if (!input[0] && !delimiter[i])
 				break ;
 			if (!ft_strncmp(delimiter[i], input, ft_strlen(input))
 				&& (ft_strlen(input) == ft_strlen(delimiter[i])))
 				break ;
-			if (!tmp->next || (tmp->next && tmp->next->cmd[0] == '|'))
+			if (!tmp->next || (tmp->next && tmp->next->cmd[0] == '|')
+				|| (tmp->next && ft_strncmp(tmp->next->cmd, "<<", 3)))
 				ft_putendl_fd(input, fd[1]);
 			input = readline(">");
 		}
@@ -51,15 +55,12 @@ void	here_doc3(t_arg *tmp, t_arg *file, int fd[2])
 	here_doc4(tmp, fd, i - 1, delimiter);
 }
 
-int	here_doc2(t_arg *tmp, int fd[2], t_arg *file, t_arg *file_out)
+void	here_doc2(t_arg *tmp, int fd[2], t_arg *file)
 {
-	int	i;
+	int		i;
 
 	i = 0;
 	here_doc3(tmp, file, fd);
-	if (file_out)
-		i = redirect(file_out);
-	return (i);
 }
 
 int	here_doc(t_arg *tmp, int fd[2])
@@ -73,12 +74,11 @@ int	here_doc(t_arg *tmp, int fd[2])
 	{
 		if (tmp->next && tmp->next->cmd[0] == '>')
 		{
-			file_out = tmp;
 			file = file->next;
 			tmp = tmp->next;
 		}
 		file = file->next;
 		tmp = tmp->next;
 	}
-	return (here_doc2(tmp, fd, file, file_out));
+	return (here_doc2(tmp, fd, file), 0);
 }

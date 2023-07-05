@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:33:39 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/23 12:32:21 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/04 15:49:41 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ char	**list_to_tabs(t_list *list)
 	int		i;
 
 	tabs = (char **)malloc((ft_lstsize(list) + 1) * sizeof(char *));
+	if (!tabs)
+		exit(0);
 	tmp = list;
 	i = 0;
 	while (tmp)

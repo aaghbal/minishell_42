@@ -6,9 +6,10 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 08:09:04 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/02 22:40:06 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	print_epxport(t_list *export_list)
@@ -121,14 +122,14 @@ void	my_export(t_list *export_list, t_list *env_list, char *var)
 
 	if (var)
 	{
-		tmp = export_pars(export_list, var);
+		tmp = ft_strdup(export_pars(export_list, var));
 		if (!tmp)
 			return ;
 		if (!same_var(export_list, env_list, tmp))
 			return ;
 		export_empty(export_list, env_list, tmp);
 		if (var != tmp)
-			free(tmp);
+			free (tmp);
 		return ;
 	}
 	else

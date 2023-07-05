@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 17:13:45 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/05/08 17:13:47 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/04 15:50:06 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*append_char(char *str, char c)
@@ -19,6 +20,8 @@ char	*append_char(char *str, char c)
 	if (!str)
 	{
 		res = malloc(sizeof(char) * 2);
+		if (!res)
+			exit(0);
 		res[0] = c;
 		res[1] = '\0';
 	}

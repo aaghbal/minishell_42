@@ -3,13 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:04 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 08:09:00 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:45:46 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
+
+void	s_handler(int s)
+{
+	dup2(s, STDIN_FILENO);
+	close(s);
+}
 
 void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list)
 {
@@ -23,16 +30,14 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list)
 	pid = fork();
 	if (pid == -1)
 		perror("Error");
-	signal(3, sighandler_child);
 	signal(2, sighandler_child);
 	if (pid == 0)
 	{
 		execute_child(tmp, fd, fd2, s);
 		if (s)
-		{
-			dup2(s, STDIN_FILENO);
-			close(s);
-		}
+			s_handler(s);
+		if (tmp->cmd[0] == '<')
+			no_cmd_inpt(tmp, export_list, env_list);
 		all_cmd(tmp, export_list, env_list);
 	}
 	s = parent(0, s, fd);
@@ -45,12 +50,21 @@ t_arg	*exe1(t_arg *tmp, t_list *export_list, t_list *env_list)
 	if (tmp && get_next_red(tmp) > 1)
 		multi_red(tmp);
 	execute1(tmp, export_list, env_list);
-	if (hered_check(tmp))
+	if (tmp->cmd[0] == '<')
+	{
+		while (tmp)
+		{
+			if (tmp->cmd && tmp->cmd[0] == '|')
+				break ;
+			tmp = tmp->next;
+		}
+	}
+	else if (hered_check(tmp))
 	{
 		wait(0);
 		while (tmp)
 		{
-			if (tmp->cmd[0] == '|')
+			if (tmp->cmd && tmp->cmd[0] == '|')
 				break ;
 			tmp = tmp->next;
 		}
@@ -65,16 +79,13 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 	if (tmp && tmp->cmd[0] == '>')
 		tmp = first_redirect(tmp);
 	if (tmp && !ft_strncmp(tmp->cmd, "<", 2))
-	{
-		if (access(tmp->next->cmd, R_OK))
-			printf("minishell: %s: No such file or directory\n",
-					tmp->next->cmd);
-		tmp = tmp->next->next;
-	}
+		tmp = exe1(tmp, export_list, env_list);
 	while (tmp)
 	{
 		if (tmp && tmp->cmd[0] == '|')
 		{
+			if (!ft_strncmp(tmp->cmd, "<", 2))
+				tmp = exe1(tmp, export_list, env_list);
 			if (tmp->next && tmp->next->cmd[0] == '>')
 			{
 				execute1(tmp, export_list, env_list);
@@ -82,7 +93,7 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 			}
 			tmp = tmp->next;
 		}
-		else if (tmp && (tmp->cmd[0] == '>' || !ft_strncmp(tmp->cmd, "<", 2)))
+		else if (tmp && (tmp->cmd[0] == '>'))
 			tmp = tmp->next;
 		else if (tmp && !ft_strncmp(tmp->cmd, "exit", 5))
 			tmp = my_exit(tmp);

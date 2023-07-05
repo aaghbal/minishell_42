@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 02:56:01 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/21 03:10:55 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/05 19:48:44 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,9 @@ void	ft_oldpwd(t_list *expo)
 		free_tabb(tmp2);
 		head = head->next;
 	}
+}
+
+int	token_found(char c)
+{
+	return (c == '|' || c == '>' || c == '<');
 }

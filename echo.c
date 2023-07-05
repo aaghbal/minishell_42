@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:28 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 08:08:56 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/05 19:28:24 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 void	echo_newline(t_arg *cmd)
@@ -18,10 +19,7 @@ void	echo_newline(t_arg *cmd)
 	i = 0;
 	while (cmd->arg[++i])
 	{
-		if (!ft_strncmp(cmd->arg[i], "$?", 2))
-			printf("%d", g_ext_s);
-		else
-			printf("%s", cmd->arg[i]);
+		printf("%s", cmd->arg[i]);
 		if (cmd->arg[i + 1])
 			printf(" ");
 	}
@@ -57,14 +55,13 @@ void	my_echo(t_arg *cmd)
 		&& chek_arg(cmd->arg[1]))
 	{
 		i = 1;
-		while (chek_arg(cmd->arg[i]))
+		while (cmd->arg[i] && chek_arg(cmd->arg[i]))
 			i++;
 		while (cmd->arg[i])
 		{
 			if (!ft_strncmp(cmd->arg[i], "$?", 3))
 				printf("%d", g_ext_s);
-			else
-				printf("%s", cmd->arg[i]);
+			printf("%s", cmd->arg[i]);
 			if (cmd->arg[i + 1])
 				printf(" ");
 			i++;

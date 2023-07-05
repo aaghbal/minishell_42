@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:14:04 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/23 22:17:09 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/05 19:47:14 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ft_check_expand(t_list *expo, char *str, char *tmp)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])))
+		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp)))
 		{
 			tmp2[1] = ft_remove_sp(tmp2[1]);
 			str = ft_strjoin(str, tmp2[1]);
@@ -81,10 +81,18 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 
 	i[0] = 0;
 	i[1] = ++(*len);
-	while (ft_isalpha(line[i[1]]) == 1 || ft_isdigit(line[i[1]]) == 1
-		|| line[i[1]] == '_')
+	if (line[i[1]] == '?')
+	{
+		str = ft_strjoin(str, ft_itoa(g_ext_s));
+		i[1]++;
+		return (str);
+	}
+	while (ft_isalnum(line[i[1]]) || line[i[1]] == '_')
 		i[1]++;
 	tmp = malloc(sizeof(char) * (i[1] - (*len)) + 1);
+	printf("-%d\n", (i[1] - (*len)) + 1);
+	if (!tmp)
+		exit(0);
 	while ((*len) < i[1])
 		tmp[i[0]++] = line[(*len)++];
 	tmp[i[0]] = '\0';

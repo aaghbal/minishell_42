@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/21 03:11:41 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/03 15:47:18 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,8 @@ char	*get_key_exp(t_list *exp, char *key)
 	return (NULL);
 }
 
-void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
+void	my_cd2(t_arg *cmd, t_list *expo)
 {
-	t_list	*tmp;
-	t_list	*tmp2;
-
-	tmp = expo;
-	tmp2 = env;
-	ft_oldpwd(tmp);
-	ft_oldpwd(tmp2);
-	if (!getcwd(NULL, 0))
-	{
-		printf("cd: error retrieving current directory: getcwd: cannot parent\
- directories: No such file or directory\n");
-		return ;
-	}
 	if (cmd->arg[1])
 	{
 		if (chdir(cmd->arg[1]) == -1)
@@ -60,52 +47,26 @@ void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
 			g_ext_s = 1;
 		}
 	}
+}
+
+void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
+{
+	t_list	*tmp;
+	t_list	*tmp2;
+
+	tmp = expo;
+	tmp2 = env;
+	ft_oldpwd(tmp);
+	ft_oldpwd(tmp2);
+	if (!getcwd(NULL, 0))
+	{
+		printf("cd: error retrieving current directory: getcwd: cannot parent\
+ directories: No such file or directory\n");
+		return ;
+	}
+	my_cd2(cmd, expo);
 	tmp = expo;
 	tmp2 = env;
 	ft_pwd(tmp);
 	ft_pwd(tmp2);
-}
-
-void	my_env(t_list *env_list)
-{
-	if (!ft_strncmp("__Head", env_list->content, 7))
-		env_list = env_list->next;
-	while (env_list)
-	{
-		if (env_list->content)
-			printf("%s\n", env_list->content);
-		env_list = env_list->next;
-	}
-}
-
-void	my_pwd(t_list *export_list)
-{
-	char	*pwd;
-
-	pwd = getcwd(NULL, 0);
-	if (!pwd)
-	{
-		printf("%s\n", get_key_exp(export_list, "PWD"));
-		return ;
-	}
-	printf("%s\n", pwd);
-}
-
-t_arg	*my_exit(t_arg *cmd)
-{
-	if (cmd->arg[2])
-	{
-		printf("exit\n");
-		printf("minishell: exit: too many arguments\n");
-		cmd = cmd->next;
-	}
-	else
-	{
-		printf("exit\n");
-		if (cmd->arg[1])
-			exit(ft_atoi(cmd->arg[1]));
-		else
-			exit(0);
-	}
-	return (cmd);
 }

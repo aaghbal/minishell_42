@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 08:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/14 08:51:54 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/03 15:43:52 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,35 @@ int	parent(int file_d, int s, int fd[2])
 	return (s);
 }
 
-void	close_file(int file_d, int fd[2])
+void	check_access(t_arg *tmp)
 {
-	if (file_d)
-		close(file_d);
-	close(fd[1]);
-	close(fd[0]);
+	while (tmp && ft_strncmp(tmp->cmd, "<", 2))
+		tmp = tmp->next;
+	while (tmp && !ft_strncmp(tmp->cmd, "<", 2))
+	{
+		if (access(tmp->redfile, R_OK))
+		{
+			printf ("minishell: No such file or directory\n");
+			exit (1);
+		}
+		tmp = tmp->next;
+	}
 }
 
 int	execute_hered(t_arg *tmp, int fd[2], int fd2[2])
 {
-	int	file_d;
+	int		file_d;
 
-	file_d = here_doc(tmp, fd2);
-	if (get_next_pip(tmp))
+	file_d = 0;
+	here_doc(tmp, fd2);
+	if (get_next_inptred(tmp))
+		check_access(tmp);
+	if (ft_strncmp(tmp->cmd, "<<", 3))
+	{
+		if (tmp->next && tmp->next->cmd[0] == '>')
+			file_d = redirect(tmp);
+	}
+	else if (get_next_pip(tmp))
 		dup2(fd[1], STDOUT_FILENO);
 	dup2(fd2[0], STDIN_FILENO);
 	close_file(file_d, fd2);
@@ -69,5 +84,5 @@ int	execute_hered(t_arg *tmp, int fd[2], int fd2[2])
 	if (tmp->cmd[0] != '<')
 		return (1);
 	else
-		exit(0);
+		exit (0);
 }

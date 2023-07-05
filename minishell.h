@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/06/23 12:31:37 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/05 19:46:21 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,6 @@
 # include <string.h>
 # include <sys/errno.h>
 # include <paths.h>
-
-// # define NOR 0
-// # define APND 4
-// # define TRNC 5
 
 int	g_ext_s;
 
@@ -70,7 +66,6 @@ typedef struct s_data
 	char	*str;
 }	t_data;
 
-/*---commands---*/
 void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list);
 void	my_export(t_list *export_list, t_list *env_list, char *var);
 void	my_pwd(t_list *export_list);
@@ -86,6 +81,7 @@ void	my_exec_cmd_c2(t_arg *cmd, int pi);
 void	my_exec_cmd_d1(t_arg *cmd, int pi);
 void	my_exec_cmd_e1(t_arg *cmd, int pi);
 void	my_echo(t_arg *cmd);
+int		token_found(char c);
 void	my_env(t_list *env_list);
 int		redirect(t_arg *tmp);
 int		here_doc(t_arg *tmp, int fd[2]);
@@ -111,6 +107,13 @@ char	**alloc(t_arg	*file);
 char	**list_to_tabs(t_list *list);
 char	*get_key_exp(t_list *exp, char *key);
 void	signals(void);
+void	no_cmd_inpt(t_arg *tmp, t_list *export_list, t_list *env_list);
+int		redirect_firstnpt(t_arg *tmp, int fd[2]);
+int		r_inpt2(t_arg *tmp, int fd[2], int fd2[2]);
+void	ft_reead_2(char *str, t_list **export_list,
+			t_list *env_list, char *tmp);
+void	ft_increment_s(int *c, int *len, int *on);
+void	ft_increment(char *line, int *c, int *len, int *on);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -124,7 +127,7 @@ t_arg	*newarg_token(char *cmd, t_type type);
 t_arg	*ft_arglast(t_arg *lst);
 t_type	get_type(char *str);
 void	ft_tokenadd_back(t_token **lst, t_token *new);
-void	add_free(t_data *data, t_token **token, char *line);
+void	add_free(t_data *data, t_token **token, char *line, int *c);
 void	ft_argadd_back(t_arg **lst, t_arg *new);
 void	is_token(t_data *data, char *line);
 void	default_cmd(t_data *data, char *line, t_list *expo);
@@ -162,5 +165,7 @@ int		current_pipe(t_arg *tmp, int fd[2], int fd2[2], int s);
 int		execute_hered(t_arg *tmp, int fd[2], int fd2[2]);
 t_arg	*first_redirect(t_arg *tmp);
 void	append_word_2(char **tmp, t_arg **arg);
+void	is_echo(t_token **tmp, t_arg **arg, char	**tmp2);
+void	is_tokkenword(t_token **tmp, t_arg **arg);
 
 #endif

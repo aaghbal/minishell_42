@@ -50,7 +50,7 @@ int	get_token_pars(char *line)
 			&& line[i + 1] != '>'))
 		return (1);
 	else if (line[i] && ((line[i] == '<' && line[i + 1] == '<')
-				|| (line[i] == '>' && line[i + 1] == '>')))
+			|| (line[i] == '>' && line[i + 1] == '>')))
 		return (1);
 	return (0);
 }
@@ -111,7 +111,8 @@ int	ft_parsing_2(t_token **token)
 		if (!ft_strncmp(tmp->cmd, "|", 1) && c == 1)
 			return (1);
 		if (tmp->next && get_token_pars(tmp->cmd)
-			&& get_token_pars(tmp->next->cmd))
+			&& get_token_pars(tmp->next->cmd)
+			&& tmp->key == 0 && tmp->next->key == 0)
 			return (1);
 		if (tmp->next && get_token_pars(tmp->cmd) && !ft_strncmp(tmp->next->cmd,
 				"|", 1))

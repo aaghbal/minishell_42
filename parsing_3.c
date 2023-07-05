@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:11:12 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/23 22:17:53 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/05 19:40:41 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	ft_reead_2(char *str, t_list **export_list, t_list *env_list, char *tmp)
 {
 	tmp = malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (!tmp)
-		return ;
+		exit(0);
 	ft_strlcpy(tmp, str, ft_strlen(str) + 1);
 	if (ft_parsing(tmp) || token_line(str, *export_list, env_list))
 	{
@@ -95,8 +95,12 @@ void	default_cmd(t_data *data, char *line, t_list *expo)
 	while (line[(data->i)] && !is_char(line[data->i]))
 	{
 		if (line[data->i] == '$' && (ft_isalpha(line[data->i + 1])
-				|| line[data->i + 1] == '_'))
+				|| line[data->i + 1] == '_' || line[data->i + 1] == '?'))
+		{
 			data->str = ft_expand(line, &data->i, data->str, expo);
+			if (line[data->i] == '?')
+				data->i++;
+		}
 		else if (line[(data->i)] != '\"' && line[data->i] != '\''
 			&& line[(data->i)])
 			data->str = append_char(data->str, line[(data->i)++]);
