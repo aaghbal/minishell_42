@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/05 18:56:43 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 11:47:01 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,26 @@ int	redirect(t_arg *tmp)
 	else
 		file_d = open(tmp->next->redfile, O_CREAT | O_RDWR | O_APPEND, 0644);
 	dup2(file_d, STDOUT_FILENO);
+	return (file_d);
+}
+
+int	redirect2(t_arg *tmp)
+{
+	int	file_d;
+
+	file_d = 0;
+	if (tmp->next->next && !ft_strncmp(tmp->next->next->cmd, ">>", 3))
+	{
+		file_d = open(tmp->next->next->redfile, O_CREAT
+				| O_RDWR | O_APPEND, 0644);
+		dup2(file_d, STDOUT_FILENO);
+	}
+	else if (tmp->next->next && !ft_strncmp(tmp->next->next->cmd, ">", 2))
+	{
+		file_d = open(tmp->next->next->redfile, O_CREAT
+				| O_RDWR | O_TRUNC, 0644);
+		dup2(file_d, STDOUT_FILENO);
+	}
 	return (file_d);
 }
 
@@ -71,39 +91,40 @@ int	redirect_firstnpt(t_arg *tmp, int fd[2])
 	int		file_d;
 	t_arg	*tmp2;
 
-	file_d = 0;
-	tmp2 = tmp;
-	if (tmp && !ft_strncmp(tmp->cmd, "<", 2))
+	tmp2 = NULL;
+	if (tmp->cmd && !ft_strncmp(tmp->cmd, "<", 2))
 	{
-		if (access(tmp->next->cmd, R_OK))
+		if (tmp->next && access(tmp->next->cmd, R_OK))
 			return (-1);
-		tmp = tmp->next;
-		file_d = open(tmp->cmd, O_RDONLY);
+		file_d = open(tmp->next->cmd, O_RDONLY);
+		dup2(file_d, STDIN_FILENO);
+		if (tmp->next->next && tmp->next->next->cmd[0] == '>')
+		{
+			tmp2 = tmp->next->next;
+			tmp = tmp->next;
+		}
 	}
-	while (tmp && tmp->next && !ft_strncmp(tmp->next->cmd, "<", 2))
+	tmp = tmp->next->next;
+	if (tmp)
 	{
 		close (file_d);
-		if (access(tmp->next->redfile, R_OK))
-			return (-1);
-		tmp = tmp->next;
-		if (!tmp && tmp2->next && tmp2->next->arg[1])
-			file_d = open(tmp->redfile, O_RDONLY);
+		file_d = open(tmp->redfile, O_RDONLY);
+		dup2(file_d, STDIN_FILENO);
 	}
-	dup2(file_d, STDIN_FILENO);
-	if (tmp->next && !ft_strncmp(tmp->next->cmd, "|", 2))
+	while (tmp && !ft_strncmp(tmp->cmd, "<", 2))
+	{
+		if (access(tmp->redfile, R_OK))
+			return (-1);
+		if (!tmp->next && tmp2)
+		{
+			if (!tmp2->cmd[1])
+				file_d = open(tmp2->redfile, O_CREAT | O_TRUNC | O_RDWR, 0644);
+			else
+				file_d = open(tmp2->redfile, O_CREAT | O_APPEND | O_RDWR, 0644);
+		}
+		tmp = tmp->next;
+	}
+	if (tmp && !ft_strncmp(tmp->cmd, "|", 2))
 		dup2(fd[1], STDOUT_FILENO);
 	return (file_d);
-}
-
-int	parsing(char *str)
-{
-	if (check_line(str))
-		return (1);
-	if (check_line_2(str))
-	{
-		printf("\e[0;31msyntax error\n");
-		g_ext_s = 127;
-		return (1);
-	}
-	return (0);
 }

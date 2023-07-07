@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:39 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/04 15:50:32 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 12:22:26 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,9 @@ int	hered_check(t_arg *tmp)
 {
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->cmd, "<<", 3))
+		if (!ft_strncmp(tmp->cmd, "|", 2))
+			return (0);
+		if (!ft_strncmp(tmp->cmd, "<<", 3) && tmp->key == 0)
 			return (1);
 		tmp = tmp->next;
 	}

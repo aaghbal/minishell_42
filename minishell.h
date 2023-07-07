@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/05 19:46:21 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 13:30:03 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_arg{
 	t_type			type;
 	struct s_arg	*next;
 	int				t_pipes;
+	int				key;
 }	t_arg;
 
 typedef struct s_token{
@@ -114,6 +115,7 @@ void	ft_reead_2(char *str, t_list **export_list,
 			t_list *env_list, char *tmp);
 void	ft_increment_s(int *c, int *len, int *on);
 void	ft_increment(char *line, int *c, int *len, int *on);
+int		redirect2(t_arg *tmp);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -123,7 +125,7 @@ void	sighandler_child2(int signal);
 /*---parsing---*/
 t_token	*ft_tokenlast(t_token *lst);
 t_token	*new_token(char *cmd, t_type type, int k);
-t_arg	*newarg_token(char *cmd, t_type type);
+t_arg	*newarg_token(char *cmd, t_type type, int key);
 t_arg	*ft_arglast(t_arg *lst);
 t_type	get_type(char *str);
 void	ft_tokenadd_back(t_token **lst, t_token *new);

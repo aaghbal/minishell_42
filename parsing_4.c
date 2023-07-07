@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_4.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:14:04 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/05 19:47:14 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/06 15:18:02 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ char	*ft_remove_sp(char *str)
 	on = 0;
 	i = 0;
 	tmp = NULL;
-	while (str[i] == ' ' || str[i] == '\t')
+	while (str && (str[i] == ' ' || str[i] == '\t'))
 		i++;
-	while (str[i])
+	while (str && str[i])
 	{
 		if (str[i] == ' ' || str[i] == '\t')
 			on = 1;
@@ -90,7 +90,6 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 	while (ft_isalnum(line[i[1]]) || line[i[1]] == '_')
 		i[1]++;
 	tmp = malloc(sizeof(char) * (i[1] - (*len)) + 1);
-	printf("-%d\n", (i[1] - (*len)) + 1);
 	if (!tmp)
 		exit(0);
 	while ((*len) < i[1])

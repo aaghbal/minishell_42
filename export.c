@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/02 22:40:06 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/07 01:47:29 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	export_empty(t_list *export_list, t_list *env_list, char *var)
 	int		i;
 	char	*tmp;
 
-	i = 0;
+	i = -1;
 	tmp = ft_strdup(var);
 	while (var[++i])
 	{

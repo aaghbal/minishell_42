@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:21:13 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/05 17:31:00 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 13:32:25 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_arg	*ft_arglast(t_arg *lst)
 
 void	is_echo(t_token **tmp, t_arg **arg, char	**tmp2)
 {
-	ft_argadd_back(arg, newarg_token(tmp2[0], (*tmp)->type));
+	ft_argadd_back(arg, newarg_token(tmp2[0], (*tmp)->type, (*tmp)->key));
 	append_word_2(tmp2, arg);
 	*tmp = (*tmp)->next;
 }
@@ -55,7 +55,8 @@ void	is_tokkenword(t_token **tmp, t_arg **arg)
 {
 	if ((*tmp && (*tmp)->type == tokenword) || (*tmp)->key == 1)
 	{
-		ft_argadd_back(arg, newarg_token((*tmp)->cmd, (*tmp)->type));
+		ft_argadd_back(arg, newarg_token((*tmp)->cmd,
+				(*tmp)->type, (*tmp)->key));
 		(*tmp) = (*tmp)->next;
 		append_word(tmp, arg);
 	}

@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 13:32:27 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/05 18:36:23 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 13:32:21 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	apend_redirection(t_token **tmp, t_arg **arg)
 {
 	t_arg	*red;
 
-	red = newarg_token((*tmp)->cmd, (*tmp)->type);
+	red = newarg_token((*tmp)->cmd, (*tmp)->type, (*tmp)->key);
 	(*tmp) = (*tmp)->next;
 	if ((*tmp) && (!get_token((*tmp)->cmd) || (*tmp)->key) == 1)
 		red->redfile = ft_strdup((*tmp)->cmd);
@@ -90,7 +90,8 @@ void	is_arg(t_token *tmp, t_arg **arg)
 					apend_redirection(&tmp, arg);
 				else
 				{
-					ft_argadd_back(arg, newarg_token(tmp->cmd, tmp->type));
+					ft_argadd_back(arg, newarg_token(tmp->cmd,
+							tmp->type, tmp->key));
 					tmp = tmp->next;
 				}
 			}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 08:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/03 15:43:52 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/07 12:23:21 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ void	sig_status(int g_ext_s)
 		ft_putendl_fd("", STDERR_FILENO);
 	else if (g_ext_s == 3)
 		ft_putendl_fd("Quit: 3", STDERR_FILENO);
-	else if (g_ext_s == 11)
-		ft_putendl_fd("Segmentation fault: 11", STDERR_FILENO);
 }
 
 int	reset(int pid)
@@ -29,7 +27,7 @@ int	reset(int pid)
 	{
 		g_ext_s = WEXITSTATUS(g_ext_s);
 		if (g_ext_s == 127)
-			printf("\e[0;31mminishell: cmmand not found\n");
+			printf("\e[0;31mminishell: command not found\n");
 	}
 	else if (WIFSIGNALED(g_ext_s))
 	{
@@ -71,11 +69,8 @@ int	execute_hered(t_arg *tmp, int fd[2], int fd2[2])
 	here_doc(tmp, fd2);
 	if (get_next_inptred(tmp))
 		check_access(tmp);
-	if (ft_strncmp(tmp->cmd, "<<", 3))
-	{
-		if (tmp->next && tmp->next->cmd[0] == '>')
-			file_d = redirect(tmp);
-	}
+	if (tmp->next && tmp->next->cmd[0] == '>')
+		file_d = redirect(tmp);
 	else if (get_next_pip(tmp))
 		dup2(fd[1], STDOUT_FILENO);
 	dup2(fd2[0], STDIN_FILENO);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 10:13:21 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/02 22:07:42 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/07 12:17:14 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,23 @@ t_arg	*first_redirect(t_arg *tmp)
 {
 	int	file_d;
 
-	if (tmp->next && tmp->cmd[0] == '>' && !tmp->redfile)
+	if (tmp->cmd[1] == '\0')
+		file_d = open(tmp->next->cmd, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	else
+		file_d = open(tmp->next->cmd, O_CREAT | O_APPEND | O_RDWR, 0644);
+	close (file_d);
+	tmp = tmp->next;
+	while (tmp->next && !ft_strncmp(tmp->next->cmd, ">", 2))
 	{
-		file_d = open(tmp->next->cmd, O_CREAT | O_RDWR, 0644);
+		close (file_d);
+		if (tmp->next->cmd[1] == '\0')
+			file_d = open(tmp->next->redfile, O_CREAT | O_TRUNC | O_RDWR, 0644);
+		else
+			file_d = open(tmp->next->redfile, O_CREAT
+					| O_APPEND | O_RDWR, 0644);
 		tmp = tmp->next;
 	}
-	else
-		file_d = open(tmp->redfile, O_CREAT | O_RDWR, 0644);
-	tmp = tmp->next;
-	close (file_d);
-	return (tmp);
+	return (tmp->next);
 }
 
 t_arg	*if_export(t_arg *tmp, t_list *export_list, t_list *env_list)

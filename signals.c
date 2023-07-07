@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:16 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/04 15:48:48 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/07 12:00:51 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_token	*new_token(char *cmd, t_type type, int k)
 	return (node);
 }
 
-t_arg	*newarg_token(char *cmd, t_type type)
+t_arg	*newarg_token(char *cmd, t_type type, int key)
 {
 	t_arg	*node;
 
@@ -59,6 +59,7 @@ t_arg	*newarg_token(char *cmd, t_type type)
 	node->cmd = ft_strdup(cmd);
 	node->arg = alloc_arg(NULL, cmd);
 	node->type = type;
+	node->key = key;
 	node->redfile = NULL;
 	node->next = NULL;
 	return (node);

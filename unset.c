@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:47 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/05 19:48:08 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/06 16:12:27 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 	while (tmp)
 	{
 		if (!ft_strncmp(cmd, tmp->content, ft_strlen(cmd))
-			&& !ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))
+			&& ((!ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))))
 		{
 			env_list->next = tmp->next;
 			free(tmp);
