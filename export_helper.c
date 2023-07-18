@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:49 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/02 11:09:53 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/08 11:43:22 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,30 @@ char	*export_pars(t_list *export_list, char *var)
 			return (export_addpars(export_list, var, i));
 	}
 	return (var);
+}
+
+t_list	*sort_export(t_list	*export_list)
+{
+	t_list	*tmp;
+	t_list	*tmp2;
+	char	*tmp3;
+
+	tmp = export_list;
+	while (tmp)
+	{
+		tmp2 = tmp->next;
+		while (tmp2)
+		{
+			if (ft_strncmp(tmp->content, tmp2->content,
+					ft_strlen(tmp->content)) > 0)
+			{
+				tmp3 = tmp->content;
+				tmp->content = tmp2->content;
+				tmp2->content = tmp3;
+			}
+			tmp2 = tmp2->next;
+		}
+		tmp = tmp->next;
+	}
+	return (export_list);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 13:30:03 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/08 11:59:38 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	ft_reead_2(char *str, t_list **export_list,
 			t_list *env_list, char *tmp);
 void	ft_increment_s(int *c, int *len, int *on);
 void	ft_increment(char *line, int *c, int *len, int *on);
-int		redirect2(t_arg *tmp);
+int		redirect_2(t_arg *tmp);
 
 /*---signals---*/
 void	sighandler(int signal);
@@ -152,7 +152,7 @@ int		is_char(char c);
 int		ft_parsing_2(t_token **token);
 int		ft_parsing(char *tmp);
 char	*ft_expand(char *line, int *len, char *str, t_list *expo);
-void	print_epxport(t_list *export_list);
+void	print_epxport(t_list *export_list, int i);
 int		get_next_pip(t_arg *arg);
 int		get_next_red(t_arg *arg);
 int		is_char(char c);
@@ -169,5 +169,6 @@ t_arg	*first_redirect(t_arg *tmp);
 void	append_word_2(char **tmp, t_arg **arg);
 void	is_echo(t_token **tmp, t_arg **arg, char	**tmp2);
 void	is_tokkenword(t_token **tmp, t_arg **arg);
+t_list	*sort_export(t_list	*export_list);
 
 #endif

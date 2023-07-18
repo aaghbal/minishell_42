@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 10:13:06 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 11:29:17 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/08 11:56:48 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	execute_child(t_arg *tmp, int fd[2], int fd2[2], int s)
 	else if ((tmp && !ft_strncmp(tmp->cmd, "<", 2)))
 	{
 		file_d = r_inpt2(tmp, fd, fd2);
-		file_d2 = redirect2(tmp);
+		file_d2 = redirect_2(tmp);
 	}
 	return (close_file(file_d, fd2), close_file(file_d2, fd), 1);
 }

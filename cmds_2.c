@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:28:26 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/07 13:29:47 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/08 10:04:39 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ t_arg	*my_exit2(t_arg *cmd)
 	return (cmd);
 }
 
+void	empty_exit(t_arg *cmd)
+{
+	if (!cmd->next || (cmd->next && cmd->next->cmd[0] != '|'))
+		exit (0);
+}
+
 t_arg	*my_exit(t_arg *cmd)
 {
 	int	i;
@@ -75,11 +81,8 @@ t_arg	*my_exit(t_arg *cmd)
 		cmd = my_exit2(cmd);
 	}
 	else
-	{	
-		if (!cmd->next || (cmd->next && cmd->next->cmd[0] != '|'))
-			exit(0);
-	}
+		empty_exit(cmd);
 	while (cmd && cmd->cmd[0] != '|')
-	cmd = cmd->next;
+		cmd = cmd->next;
 	return (cmd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:04 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 13:28:29 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/08 10:02:05 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ t_arg	*exe1(t_arg *tmp, t_list *export_list, t_list *env_list)
 	{
 		while (tmp)
 		{
-			if (tmp->cmd && (tmp->cmd[0] == '|' || !ft_strncmp(tmp->cmd, "<<", 3)))
+			if (tmp->cmd && (tmp->cmd[0] == '|'
+					|| !ft_strncmp(tmp->cmd, "<<", 3)))
 				break ;
 			tmp = tmp->next;
 		}
@@ -63,12 +64,8 @@ t_arg	*exe1(t_arg *tmp, t_list *export_list, t_list *env_list)
 	else if (hered_check(tmp))
 	{
 		wait(0);
-		while (tmp)
-		{
-			if (tmp->cmd && tmp->cmd[0] == '|')
-				break ;
+		while (tmp && tmp->cmd && tmp->cmd[0] != '|')
 			tmp = tmp->next;
-		}
 	}
 	else
 		tmp = tmp->next;

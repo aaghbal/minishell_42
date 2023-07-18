@@ -6,38 +6,38 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 01:47:29 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/08 11:43:13 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_epxport(t_list *export_list)
+void	print_epxport(t_list *export_list, int i)
 {
 	char	*tmp;
-	int		i;
 
-	if (!ft_strncmp("__Head", export_list->content, 7))
-		export_list = export_list->next;
 	while (export_list)
 	{
-		printf("declare -x ");
-		tmp = ft_strdup(export_list->content);
-		i = -1;
-		while (tmp[++i])
+		if (!ft_strncmp("__Head", export_list->content, 7))
+			export_list = export_list->next;
+		else
 		{
-			if (tmp[i] == '=')
+			printf("declare -x ");
+			tmp = ft_strdup(export_list->content);
+			i = -1;
+			while (tmp[++i])
 			{
-				printf("=\"");
-				printf("%s", ft_strchr(export_list->content, '=') + 1);
-				printf("\"");
-				break ;
+				if (tmp[i] == '=')
+				{
+					printf("=\"%s\"", ft_strchr(export_list->content, '=') + 1);
+					break ;
+				}
+				printf("%c", tmp[i]);
 			}
-			printf("%c", tmp[i]);
+			printf("\n");
+			free(tmp);
+			export_list = export_list->next;
 		}
-		printf("\n");
-		free(tmp);
-		export_list = export_list->next;
 	}
 }
 
@@ -119,19 +119,23 @@ int	same_var(t_list *export_list, t_list *env_list, char *var)
 void	my_export(t_list *export_list, t_list *env_list, char *var)
 {
 	char	*tmp;
+	int		i;
 
+	i = 0;
 	if (var)
 	{
 		tmp = ft_strdup(export_pars(export_list, var));
 		if (!tmp)
 			return ;
 		if (!same_var(export_list, env_list, tmp))
-			return ;
-		export_empty(export_list, env_list, tmp);
-		if (var != tmp)
+		{
 			free (tmp);
+			return ;
+		}
+		export_empty(export_list, env_list, tmp);
+		free (tmp);
 		return ;
 	}
 	else
-		print_epxport(export_list);
+		print_epxport(sort_export(export_list), 1);
 }
