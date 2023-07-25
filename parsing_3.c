@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:11:12 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/07 06:06:06 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/25 11:37:30 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,19 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	exit(0);
 }
 
-void	ft_reead_2(char *str, t_list **export_list, t_list *env_list, char *tmp)
+// void	ft_reead_2(char *str, t_list **export_list, t_list *env_list)
+// {
+// 	if (ft_parsing(str) || token_line(str, *export_list, env_list))
+// 	{
+// 		free (str);
+// 		printf("\e[0;31msyntax error\n");
+// 		g_ext_s = 258;
+// 	}
+// }
+void	ft_reead_2(char *str, t_list **export_list, t_list *env_list)
 {
+	char *tmp;
+	
 	tmp = malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (!tmp)
 		exit(0);

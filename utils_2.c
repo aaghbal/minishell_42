@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:33:39 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/07 09:05:49 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:10:17 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ int	parsing(char *str)
 		return (1);
 	if (check_line_2(str))
 	{
-		printf("\e[0;31msyntax error\n");
-		g_ext_s = 127;
+		printf("\e[0;31msyntax Eerror\n");
+		g_ext_s = 258;
 		return (1);
 	}
 	return (0);

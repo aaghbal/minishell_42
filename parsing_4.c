@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:14:04 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/06 15:18:02 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/24 17:03:21 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,18 @@ char	*ft_check_expand(t_list *expo, char *str, char *tmp)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp)))
+		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp))
+			&& ft_strlen(tmp) == ft_strlen(tmp2[0]))
 		{
 			tmp2[1] = ft_remove_sp(tmp2[1]);
 			str = ft_strjoin(str, tmp2[1]);
+			free_tabb(tmp2);
+			return (str);
 		}
 		free_tabb(tmp2);
 		expo = expo->next;
 	}
-	return (str);
+	return (ft_strdup("\r"));
 }
 
 char	*ft_expand(char *line, int *len, char *str, t_list *expo)
@@ -83,8 +86,10 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 	i[1] = ++(*len);
 	if (line[i[1]] == '?')
 	{
-		str = ft_strjoin(str, ft_itoa(g_ext_s));
+		tmp = ft_itoa(g_ext_s);
+		str = ft_strjoin(str, tmp);
 		i[1]++;
+		free(tmp);
 		return (str);
 	}
 	while (ft_isalnum(line[i[1]]) || line[i[1]] == '_')
@@ -97,8 +102,6 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 	tmp[i[0]] = '\0';
 	str = ft_check_expand(expo, str, tmp);
 	free(tmp);
-	if (!str)
-		str = ft_strdup("");
 	return (str);
 }
 

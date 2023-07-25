@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_helper.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:49 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/08 11:43:22 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/25 11:52:03 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*export_pars(t_list *export_list, char *var)
 		if (var[i] == '+')
 			return (export_addpars(export_list, var, i));
 	}
-	return (var);
+	return (ft_strdup(var));
 }
 
 t_list	*sort_export(t_list	*export_list)

@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:10:02 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/08 13:12:16 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 11:00:12 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,13 @@ int	token_line(char *line, t_list *export_list, t_list *env_list)
 	data->str = NULL;
 	tokenization(&token, data, export_list, line);
 	if (ft_parsing_2(&token) && !parsing_3(line))
-		return (free(line), free(data), free_list(token), 1);
+		return (free(data), free_list(token), 1);
 	is_arg(token, &arg);
 	free(line);
 	free(data);
 	free_list(token);
 	execute(arg, export_list, env_list);
 	free_arg(arg);
+	system("leaks minishell");
 	return (0);
 }

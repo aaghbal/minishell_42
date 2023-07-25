@@ -6,9 +6,10 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 16:55:17 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/05/26 18:30:04 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 12:07:53 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 int	check_quotes(char *tmp, int *i)
@@ -65,10 +66,7 @@ int	ft_parsing(char *tmp)
 		if (tmp[i] == '\"' || tmp[i] == '\'')
 		{
 			if (check_quotes(tmp, &i))
-			{
-				free(tmp);
 				return (1);
-			}
 		}
 		i++;
 	}
