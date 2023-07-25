@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:52:09 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 11:36:48 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 13:58:27 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void	ft_reead_2(char *str, t_list **export_list,t_list *env_list);
 void	ft_increment_s(int *c, int *len, int *on);
 void	ft_increment(char *line, int *c, int *len, int *on);
 int		redirect_2(t_arg *tmp);
+int		pars3(char *str, char c);
 
 /*---signals---*/
 void	sighandler(int signal);

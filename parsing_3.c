@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:11:12 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 11:37:30 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 14:01:34 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 		i++;
 	}
 	ft_exec(cmd, list_env, str);
+	write(2, "\e[0;31mminishell: command not found\e[m\n", 39);
 	exit(127);
 }
 

@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 08:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 12:23:21 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 14:03:53 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	reset(int pid)
 	{
 		g_ext_s = WEXITSTATUS(g_ext_s);
 		if (g_ext_s == 127)
-			printf("\e[0;31mminishell: command not found\n");
+			write(2, "\e[0;31mminishell: command not found\e[m\n", 39);
 	}
 	else if (WIFSIGNALED(g_ext_s))
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arg.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 13:32:27 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/08 11:08:11 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/25 14:29:29 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,11 @@ void	is_arg(t_token *tmp, t_arg **arg)
 		{
 			if (tmp)
 			{
-				if (!(ft_strncmp(tmp->cmd, "<<", 3)) && tmp->key == 0)
+				if ((!(ft_strncmp(tmp->cmd, "<<", 3)) || !(ft_strncmp(tmp->cmd, ">", 2))) && tmp->key == 0)
+				{
+					printf("hhhhh %d\n", tmp->key);
 					apend_redirection(&tmp, arg);
+				}
 				else
 				{
 					ft_argadd_back(arg, newarg_token(tmp->cmd,
