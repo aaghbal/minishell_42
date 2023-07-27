@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memmove.c                                       :+:      :+:    :+:   */
+/*   execute_utils4.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/08 05:53:18 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 18:52:06 by zel-kach         ###   ########.fr       */
+/*   Created: 2023/07/26 17:26:26 by zel-kach          #+#    #+#             */
+/*   Updated: 2023/07/26 17:26:29 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+t_arg	*if_redi(t_arg *tmp)
 {
-	unsigned char	*s;
-	unsigned char	*d;
-
-	s = (unsigned char *)src;
-	d = (unsigned char *)dst;
-	if (!dst && !src)
-		return (NULL);
-	if (dst > src)
+	if (tmp && tmp->cmd[0] == '>')
 	{
-		while (len-- > 0)
-			d[len] = s[len];
+		while (tmp && tmp->cmd[0] == '>')
+		{
+			if (tmp && tmp->cmd && tmp->cmd[0] == '|')
+				exit (0);
+			tmp = tmp->next;
+		}
 	}
-	else
-		ft_memcpy(d, s, len);
-	return (dst);
+	return (tmp);
 }

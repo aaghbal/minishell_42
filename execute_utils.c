@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 08:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 14:03:53 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 14:19:47 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,7 @@ int	reset(int pid)
 {
 	waitpid(pid, &g_ext_s, 0);
 	if (WIFEXITED(g_ext_s))
-	{
 		g_ext_s = WEXITSTATUS(g_ext_s);
-		if (g_ext_s == 127)
-			write(2, "\e[0;31mminishell: command not found\e[m\n", 39);
-	}
 	else if (WIFSIGNALED(g_ext_s))
 	{
 		g_ext_s = WTERMSIG(g_ext_s) + 128;
@@ -76,8 +72,12 @@ int	execute_hered(t_arg *tmp, int fd[2], int fd2[2])
 	dup2(fd2[0], STDIN_FILENO);
 	close_file(file_d, fd2);
 	close_file(file_d, fd);
-	if (tmp->cmd[0] != '<')
-		return (1);
-	else
-		exit (0);
+	while (tmp)
+	{
+		write(2, "d\n", 2);
+		if (tmp->cmd[0] != '<')
+			return (1);
+		tmp = tmp->next;
+	}
+	exit (0);
 }

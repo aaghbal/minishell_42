@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 10:13:25 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/06 16:11:50 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/26 17:30:36 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,35 @@ t_arg	*if_unset(t_arg *tmp, t_list *export_list, t_list *env_list)
 		if (!tmp->next)
 			return (NULL);
 		tmp = tmp->next;
+	}
+	return (tmp);
+}
+
+int	second_redirect(t_arg *tmp)
+{
+	int	file_d;
+
+	if (tmp->cmd[1] == '\0')
+		file_d = open(tmp->redfile, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	else
+		file_d = open(tmp->redfile, O_CREAT | O_APPEND | O_RDWR, 0644);
+	dup2(file_d, STDOUT_FILENO);
+	return (file_d);
+}
+
+t_arg	*pipe_ch(t_arg *tmp, t_list *export_list, t_list *env_list)
+{
+	if (tmp && tmp->cmd[0] == '|')
+	{
+		if (tmp->next && tmp->next->cmd[0] == '>')
+		{
+			tmp = tmp->next;
+			exe1(tmp, export_list, env_list);
+			while (tmp && tmp->cmd && tmp->cmd[0] != '|')
+				tmp = tmp->next;
+		}
+		if (tmp)
+			tmp = tmp->next;
 	}
 	return (tmp);
 }

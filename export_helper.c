@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:49 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 11:52:03 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 21:32:25 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,8 @@ char	*export_addpars(t_list *export_list, char *var, int i)
 	}
 }
 
-char	*export_pars(t_list *export_list, char *var)
+char	*export_pars2(t_list *export_list, char *var, int i)
 {
-	int	i;
-
-	i = 0;
-	if (!ft_isalpha(var[i]) && var[i] != '_')
-	{
-		printf("\e[0;31mminishell: export: not a valid identifier\n");
-		g_ext_s = 1;
-		return (NULL);
-	}
 	while (var[++i])
 	{
 		if (var[i] == '=')
@@ -50,6 +41,31 @@ char	*export_pars(t_list *export_list, char *var)
 			return (export_addpars(export_list, var, i));
 	}
 	return (ft_strdup(var));
+}
+
+char	*export_pars(t_list *export_list, char *var)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(var[i]) && var[i] != '_')
+	{
+		printf("\e[0;31mminishell: export: not a valid identifier\n");
+		g_ext_s = 1;
+		return (NULL);
+	}
+	while (var[++i])
+	{
+		if (var[i] == '=' || (var[i] == '+' && var[i + 1] == '='))
+			break;
+		if (!ft_isalnum(var[i]) && var[i] != '_')
+		{
+			printf("\e[0;31mminishell: export: not a valid identifier\n");
+			g_ext_s = 1;
+			return (NULL);
+		}
+	}
+	return (export_pars2(export_list, var, i));
 }
 
 t_list	*sort_export(t_list	*export_list)

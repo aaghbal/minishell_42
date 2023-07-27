@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 02:26:44 by zel-kach          #+#    #+#             */
-/*   Updated: 2022/10/11 02:55:23 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/25 18:52:12 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "libft.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -29,9 +30,9 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (0);
 	while (s[start] != 0 && p < len)
 	{
-			ss[p] = s[start];
-			p++;
-			start++;
+		ss[p] = s[start];
+		p++;
+		start++;
 	}
 	ss[p] = '\0';
 	return (ss);

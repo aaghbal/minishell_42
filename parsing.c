@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 18:33:00 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/05 19:47:03 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 16:12:30 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*check_d_quote(char *line, char *str, int *len, t_list *expo)
 			str = single_quotes(line, str, len);
 		else if (line[(*len)] == '\"')
 			on = 0;
-		else
+		if (line[(*len)] != '\"')
 			str = append_char(str, line[(*len)]);
 		if (line[(*len)] == '\0')
 			break ;
@@ -76,7 +76,7 @@ char	*check_s_quote(char *line, char *str, int *len)
 			on = 0;
 			c++;
 		}
-		else
+		if (line[(*len)] != '\'')
 			str = append_char(str, line[(*len)]);
 		if (line[(*len)] == '\0')
 			break ;

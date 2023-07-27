@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:10:02 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 14:33:11 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 14:48:36 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,5 @@ int	token_line(char *line, t_list *export_list, t_list *env_list)
 	free_list(token);
 	execute(arg, export_list, env_list);
 	free_arg(arg);
-	// system("leaks minishell");
 	return (0);
 }

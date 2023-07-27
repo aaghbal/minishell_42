@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:39 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/07 12:22:26 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 14:42:13 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ char	**alloc(t_arg *file)
 	i = 0;
 	while (ft_strncmp(file->cmd, "<<", 3))
 		file = file->next;
-	while (file && !ft_strncmp(file->cmd, "<<", 3))
+	while (file && ft_strncmp(file->cmd, "|", 2))
 	{
-		i++;
+		if (!ft_strncmp(file->cmd, "<<", 3))
+			i++;
 		file = file->next;
 	}
 	delem = malloc(sizeof(char *) * i + 1);

@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 16:55:17 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 12:07:53 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 18:27:36 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,10 @@ int	ft_parsing(char *tmp)
 		if (tmp[i] == '\"' || tmp[i] == '\'')
 		{
 			if (check_quotes(tmp, &i))
+			{
+				free(tmp);
 				return (1);
+			}
 		}
 		i++;
 	}

@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:58 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 13:35:31 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/25 21:37:41 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	f(void)
-{
-	system("leaks minishell");
-}
-
 
 void	ft_read(t_list **export_list, t_list *env_list)
 {
@@ -111,9 +105,7 @@ int	main(int ac, char **av, char *env[])
 {
 	t_list	*env_list;
 	t_list	*export_list;
-	
-	
-	// atexit(f);
+
 	env_list = NULL;
 	export_list = NULL;
 	(void)av;

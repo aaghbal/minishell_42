@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 11:02:04 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 13:58:18 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/26 17:30:27 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	execute1(t_arg *tmp, t_list *export_list, t_list *env_list)
 		if (!ft_strncmp(tmp->cmd, "<", 2) || (!ft_strncmp(tmp->cmd, "<<", 3)
 				&& tmp->redfile))
 			no_cmd_inpt(tmp, export_list, env_list);
+		tmp = if_redi(tmp);
 		all_cmd(tmp, export_list, env_list);
 	}
 	s = parent(0, s, fd);
@@ -77,20 +78,22 @@ void	execute2(t_arg *tmp, t_list *export_list, t_list *env_list)
 	if (tmp && !ft_strncmp(tmp->cmd, "exit", 5))
 		tmp = my_exit(tmp);
 	if (tmp && tmp->key == 0 && tmp->cmd[0] == '>')
-		tmp = first_redirect(tmp);
+	{
+		if (tmp->next && tmp->next->cmd[0] != '>' && tmp->next->cmd[0] != '|'
+			&& !tmp->next->next)
+		{
+			exe1(tmp, export_list, env_list);
+			while (tmp && tmp->cmd && tmp->cmd[0] != '|')
+				tmp = tmp->next;
+		}
+		else
+			tmp = first_redirect(tmp);
+	}
 	while (tmp)
 	{
 		if (tmp && tmp->cmd[0] == '|')
-		{
-			if (tmp->next && tmp->next->cmd[0] == '>')
-			{
-				tmp = first_redirect(tmp->next);
-				if (!tmp)
-					continue ;
-			}
-			tmp = tmp->next;
-		}
-		if (tmp && tmp->key == 0 && ((tmp->cmd[0] == '>')))
+			tmp = pipe_ch(tmp, export_list, env_list);
+		else if (tmp && tmp->key == 0 && ((tmp->cmd[0] == '>')))
 			tmp = tmp->next;
 		else if (tmp && !ft_strncmp(tmp->cmd, "exit", 5))
 			tmp = tmp->next;
