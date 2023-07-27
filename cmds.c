@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 04:51:53 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/26 18:40:10 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/03 15:47:18 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,7 @@ char	*get_key_exp(t_list *exp, char *key)
 	{
 		tmp2 = ft_split(head->content, '=');
 		if (!ft_strncmp(key, tmp2[0], ft_strlen(key)))
-		{
-			free(tmp2[0]);
-			free(tmp2);
 			return (tmp2[1]);
-		}
 		free_tabb(tmp2);
 		head = head->next;
 	}
@@ -35,9 +31,6 @@ char	*get_key_exp(t_list *exp, char *key)
 
 void	my_cd2(t_arg *cmd, t_list *expo)
 {
-	char	*tmp;
-
-	tmp = NULL;
 	if (cmd->arg[1])
 	{
 		if (chdir(cmd->arg[1]) == -1)
@@ -48,13 +41,11 @@ void	my_cd2(t_arg *cmd, t_list *expo)
 	}
 	else
 	{
-		tmp = get_key_exp((expo), "HOME");
-		if (chdir(tmp) == -1)
+		if (chdir(get_key_exp((expo), "HOME")) == -1)
 		{
 			printf("cd: HOME not set\n");
 			g_ext_s = 1;
 		}
-		free(tmp);
 	}
 }
 
@@ -62,14 +53,12 @@ void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
 {
 	t_list	*tmp;
 	t_list	*tmp2;
-	char	*buf;
 
 	tmp = expo;
 	tmp2 = env;
 	ft_oldpwd(tmp);
 	ft_oldpwd(tmp2);
-	buf = getcwd(NULL, 0);
-	if (!buf)
+	if (!getcwd(NULL, 0))
 	{
 		printf("cd: error retrieving current directory: getcwd: cannot parent\
  directories: No such file or directory\n");
@@ -78,7 +67,6 @@ void	my_cd(t_arg *cmd, t_list *expo, t_list *env)
 	my_cd2(cmd, expo);
 	tmp = expo;
 	tmp2 = env;
-	free(buf);
 	ft_pwd(tmp);
 	ft_pwd(tmp2);
 }

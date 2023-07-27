@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 13:10:02 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/26 14:48:36 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:49:04 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,8 @@ char	*get_token(char *line)
 
 void	tokenization(t_token **tok, t_data *data, t_list *exp_list, char *line)
 {
-	int	c;
-
-	c = 0;
 	while (line[data->i])
 	{
-		c = data->i;
 		while (line[(data->i)] == ' ' || line[(data->i)] == '\t')
 			(data->i)++;
 		if (check_token(line[data->i]))
@@ -47,7 +43,7 @@ void	tokenization(t_token **tok, t_data *data, t_list *exp_list, char *line)
 		else
 			default_cmd(data, line, exp_list);
 		if (data->str)
-			add_free(data, tok, line, &c);
+			add_free(data, tok, line);
 	}
 }
 
@@ -108,7 +104,7 @@ int	token_line(char *line, t_list *export_list, t_list *env_list)
 	data->str = NULL;
 	tokenization(&token, data, export_list, line);
 	if (ft_parsing_2(&token) && !parsing_3(line))
-		return (free(data), free_list(token), 1);
+		return (free(line), free(data), free_list(token), 1);
 	is_arg(token, &arg);
 	free(line);
 	free(data);

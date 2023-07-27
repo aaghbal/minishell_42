@@ -6,10 +6,9 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/15 16:55:17 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/26 18:27:36 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/05/26 18:30:04 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 int	check_quotes(char *tmp, int *i)

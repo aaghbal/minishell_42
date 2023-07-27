@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 02:56:01 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 21:37:21 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/06/21 03:10:55 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	ft_pwd(t_list *expo)
 {
 	char	**tmp2;
 	t_list	*head;
-	char	*buf;
-	char	*tmp;
 
 	head = expo;
 	while (head)
@@ -26,12 +24,8 @@ void	ft_pwd(t_list *expo)
 		if (!ft_strncmp(tmp2[0], "PWD", ft_strlen(tmp2[0]))
 			&& ft_strlen(tmp2[0]) == ft_strlen("PWD"))
 		{
-			buf = getcwd(NULL, 0);
-			tmp = ft_substr(head->content, 0, ft_strlen("PWD="));
-			head->content = ft_strjoin(tmp, buf);
-			free(tmp);
-			free(buf);
-			free(head->content);
+			head->content = ft_substr(head->content, 0, ft_strlen("PWD="));
+			head->content = ft_strjoin(head->content, getcwd(NULL, 0));
 		}
 		free_tabb(tmp2);
 		head = head->next;
@@ -42,8 +36,6 @@ void	ft_oldpwd(t_list *expo)
 {
 	char	**tmp2;
 	t_list	*head;
-	char	*buf;
-	char	*tmp;
 
 	head = expo;
 	while (head)
@@ -52,19 +44,10 @@ void	ft_oldpwd(t_list *expo)
 		if (head->content && !ft_strncmp(tmp2[0], "OLDPWD", ft_strlen(tmp2[0]))
 			&& ft_strlen(tmp2[0]) == ft_strlen("OLDPWD"))
 		{
-			buf = getcwd(NULL, 0);
-			tmp = ft_substr(head->content, 0, ft_strlen("OLDPWD="));
-			head->content = ft_strjoin(tmp, buf);
-			free(head->content);
-			free(tmp);
-			free(buf);
+			head->content = ft_substr(head->content, 0, ft_strlen("OLDPWD="));
+			head->content = ft_strjoin(head->content, getcwd(NULL, 0));
 		}
 		free_tabb(tmp2);
 		head = head->next;
 	}
-}
-
-int	token_found(char c)
-{
-	return (c == '|' || c == '>' || c == '<');
 }

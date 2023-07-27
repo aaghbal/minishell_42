@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/08 05:53:18 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 18:52:06 by zel-kach         ###   ########.fr       */
+/*   Updated: 2022/10/19 19:45:11 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "libft.h"
 
 void	*ft_memmove(void *dst, const void *src, size_t len)
@@ -24,7 +23,7 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	if (dst > src)
 	{
 		while (len-- > 0)
-			d[len] = s[len];
+		d[len] = s[len];
 	}
 	else
 		ft_memcpy(d, s, len);

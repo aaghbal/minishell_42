@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_4.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:14:04 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/24 17:03:21 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:47:58 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ char	*ft_remove_sp(char *str)
 	on = 0;
 	i = 0;
 	tmp = NULL;
-	while (str && (str[i] == ' ' || str[i] == '\t'))
+	while (str[i] == ' ' || str[i] == '\t')
 		i++;
-	while (str && str[i])
+	while (str[i])
 	{
 		if (str[i] == ' ' || str[i] == '\t')
 			on = 1;
@@ -63,18 +63,15 @@ char	*ft_check_expand(t_list *expo, char *str, char *tmp)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp))
-			&& ft_strlen(tmp) == ft_strlen(tmp2[0]))
+		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])))
 		{
 			tmp2[1] = ft_remove_sp(tmp2[1]);
 			str = ft_strjoin(str, tmp2[1]);
-			free_tabb(tmp2);
-			return (str);
 		}
 		free_tabb(tmp2);
 		expo = expo->next;
 	}
-	return (ft_strdup("\r"));
+	return (str);
 }
 
 char	*ft_expand(char *line, int *len, char *str, t_list *expo)
@@ -84,15 +81,8 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 
 	i[0] = 0;
 	i[1] = ++(*len);
-	if (line[i[1]] == '?')
-	{
-		tmp = ft_itoa(g_ext_s);
-		str = ft_strjoin(str, tmp);
-		i[1]++;
-		free(tmp);
-		return (str);
-	}
-	while (ft_isalnum(line[i[1]]) || line[i[1]] == '_')
+	while (ft_isalpha(line[i[1]]) == 1 || ft_isdigit(line[i[1]]) == 1
+		|| line[i[1]] == '_')
 		i[1]++;
 	tmp = malloc(sizeof(char) * (i[1] - (*len)) + 1);
 	if (!tmp)
@@ -102,6 +92,8 @@ char	*ft_expand(char *line, int *len, char *str, t_list *expo)
 	tmp[i[0]] = '\0';
 	str = ft_check_expand(expo, str, tmp);
 	free(tmp);
+	if (!str)
+		str = ft_strdup("");
 	return (str);
 }
 

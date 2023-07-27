@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 16:09:39 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/26 14:42:13 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:50:32 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,9 @@ char	**alloc(t_arg *file)
 	i = 0;
 	while (ft_strncmp(file->cmd, "<<", 3))
 		file = file->next;
-	while (file && ft_strncmp(file->cmd, "|", 2))
+	while (file && !ft_strncmp(file->cmd, "<<", 3))
 	{
-		if (!ft_strncmp(file->cmd, "<<", 3))
-			i++;
+		i++;
 		file = file->next;
 	}
 	delem = malloc(sizeof(char *) * i + 1);
@@ -36,9 +35,7 @@ int	hered_check(t_arg *tmp)
 {
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->cmd, "|", 2))
-			return (0);
-		if (!ft_strncmp(tmp->cmd, "<<", 3) && tmp->key == 0)
+		if (!ft_strncmp(tmp->cmd, "<<", 3))
 			return (1);
 		tmp = tmp->next;
 	}

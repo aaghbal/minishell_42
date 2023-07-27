@@ -6,7 +6,7 @@
 /*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:47 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/06 16:12:27 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/02 23:04:06 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	my_unset(char *cmd, t_list *export_list, t_list *env_list)
 	while (tmp)
 	{
 		if (!ft_strncmp(cmd, tmp->content, ft_strlen(cmd))
-			&& ((!ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))))
+			&& !ft_strncmp(tmp->content + ft_strlen(cmd), "=", 1))
 		{
 			env_list->next = tmp->next;
 			free(tmp);
@@ -62,31 +62,35 @@ void	add_free2(t_data *data, t_token **token, int *key)
 	{
 		ft_tokenadd_back(token, new_token(data->str,
 				get_type(data->str), *key));
+		key = 0;
 	}
 	else
 		ft_tokenadd_back(token, new_token(data->str,
 				get_type(data->str), *key));
 }
 
-void	add_free(t_data *data, t_token **token, char *line, int *c)
+void	add_free(t_data *data, t_token **token, char *line)
 {
-	int	key;
-	int	i;
+	static int	key;
+	int			i;
 
-	key = 0;
-	i = *c;
-	while (line[i])
+	i = 0;
+	add_free2(data, token, &key);
+	if (!ft_strncmp(data->str, "echo", 4) || get_token_pars(data->str))
 	{
-		if (line[i] == ' ' || line[i] == '\t')
-			i++;
-		else
+		i = data->i;
+		while (line[i])
 		{
-			if (line[i] == '\"' || line[i] == '\'')
-				key = 1;
-			break ;
+			if (line[i] == ' ' || line[i] == '\t')
+				i++;
+			else
+			{
+				if (line[i] == '\"' || line[i] == '\"')
+					key = 1;
+				break ;
+			}
 		}
 	}
-	add_free2(data, token, &key);
 	free(data->str);
 	data->str = NULL;
 }

@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: zel-kach <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 02:24:30 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/25 18:51:58 by zel-kach         ###   ########.fr       */
+/*   Updated: 2022/10/19 02:48:20 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "libft.h"
 
 static	size_t	ft_count_num(int c)
@@ -30,7 +29,7 @@ static	size_t	ft_count_num(int c)
 		return (count + 1);
 	}
 	else
-	{
+	{	
 		while (nb > 0)
 		{
 			nb = (nb / 10);

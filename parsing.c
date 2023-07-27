@@ -6,10 +6,9 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 18:33:00 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 16:12:30 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/06/13 13:42:54 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 char	*check_d_quote(char *line, char *str, int *len, t_list *expo)
@@ -21,17 +20,17 @@ char	*check_d_quote(char *line, char *str, int *len, t_list *expo)
 	on = 1;
 	while (line[(*len)])
 	{
-		if (line[(*len)] == '$' && (ft_isalpha(line[(*len) + 1])
-				|| line[(*len) + 1] == '?'))
+		if (line[(*len)] == '$' && (ft_isalpha(line[(*len) + 1])))
 			str = ft_expand(line, len, str, expo);
-		else if ((line[(*len)] == ' ' || line[(*len)] == '\t'
-				|| token_found(line[*len])) && on == 0)
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break ;
 		else if (line[(*len)] == '\'' && on == 0)
 			str = single_quotes(line, str, len);
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
+			break ;
 		else if (line[(*len)] == '\"')
 			on = 0;
-		if (line[(*len)] != '\"')
+		else
 			str = append_char(str, line[(*len)]);
 		if (line[(*len)] == '\0')
 			break ;
@@ -43,6 +42,8 @@ char	*check_d_quote(char *line, char *str, int *len, t_list *expo)
 char	*double_quotes(char *line, char *str, int *len, t_list *expo)
 {
 	++(*len);
+	if (line[(*len)] != '\"' && line[(*len)] != '$')
+		str = append_char(str, line[(*len)++]);
 	str = check_d_quote(line, str, len, expo);
 	return (str);
 }
@@ -66,17 +67,18 @@ char	*check_s_quote(char *line, char *str, int *len)
 	on = 1;
 	while (line[(*len)])
 	{
-		if ((line[(*len)] == ' ' || line[(*len)] == '\t'
-				|| token_found(line[*len])) && on == 0)
+		if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
 			break ;
 		else if (line[(*len)] == '\"' && on == 0)
 			str = double_quotes(line, str, len, NULL);
+		else if ((line[(*len)] == ' ' || line[(*len)] == '\t') && on == 0)
+			break ;
 		else if (line[(*len)] == '\'')
 		{
 			on = 0;
 			c++;
 		}
-		if (line[(*len)] != '\'')
+		else
 			str = append_char(str, line[(*len)]);
 		if (line[(*len)] == '\0')
 			break ;

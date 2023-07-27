@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmds_2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:28:26 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/26 18:33:01 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/03 16:45:30 by zel-kach         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,35 +37,6 @@ void	my_pwd(t_list *export_list)
 	printf("%s\n", pwd);
 }
 
-t_arg	*my_exit2(t_arg *cmd)
-{
-	if (cmd->arg[2])
-	{
-		if (!cmd->next)
-			printf("exit\n");
-		printf("minishell: exit: too many arguments\n");
-		g_ext_s = 1;
-	}
-	else
-	{
-		if (!cmd->next || (cmd->next && cmd->next->cmd[0] != '|'))
-		{
-			printf("exit\n");
-			exit (ft_atoi(cmd->arg[1]));
-		}
-	}
-	return (cmd);
-}
-
-void	empty_exit(t_arg *cmd)
-{
-	if (!cmd->next || (cmd->next && cmd->next->cmd[0] != '|'))
-	{
-		printf("exit\n");
-		exit (0);
-	}
-}
-
 t_arg	*my_exit(t_arg *cmd)
 {
 	int	i;
@@ -78,18 +49,19 @@ t_arg	*my_exit(t_arg *cmd)
 			if (!ft_isdigit(cmd->arg[1][i]))
 			{
 				printf("exit\nminishell: exit: numeric argument required\n");
-				if (!cmd->next || (cmd->next && cmd->next->cmd[0] != '|'))
-					exit (255);
-				while (cmd && cmd->cmd[0] != '|')
-					cmd = cmd->next;
-				return (cmd);
+				exit (255);
 			}
 		}
-		cmd = my_exit2(cmd);
+		if (cmd->arg[2])
+		{
+			printf("exit\nminishell: exit: too many arguments\n");
+			g_ext_s = 1;
+			cmd = cmd->next;
+		}
+		else
+			exit (ft_atoi(cmd->arg[1]));
 	}
 	else
-		empty_exit(cmd);
-	while (cmd && cmd->cmd[0] != '|')
-		cmd = cmd->next;
+		exit(0);
 	return (cmd);
 }

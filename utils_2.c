@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 11:33:39 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/25 14:06:52 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/04 15:49:41 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,19 @@ void	ft_error(char *cmd)
 		exit(127);
 }
 
+void	ft_execve(char **str, t_arg *cmd, char **env)
+{
+	int	i;
+
+	i = 0;
+	execve(cmd->cmd, cmd->arg, env);
+	while (str && str[i])
+	{
+		if (execve(ft_strjoin(str[i], cmd->cmd), cmd->arg, env) == -1)
+			i++;
+	}
+}
+
 int	check_line(char *str)
 {
 	int	i;
@@ -53,17 +66,4 @@ int	check_line(char *str)
 		i++;
 	}
 	return (1);
-}
-
-int	parsing(char *str)
-{
-	if (check_line(str))
-		return (1);
-	if (check_line_2(str))
-	{
-		printf("\e[0;31msyntax error\n");
-		g_ext_s = 258;
-		return (1);
-	}
-	return (0);
 }

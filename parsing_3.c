@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:11:12 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/26 18:44:27 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/04 15:47:43 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	ft_exu_other(t_arg *cmd, t_list *export_list, t_list *list_env)
 		i++;
 	}
 	ft_exec(cmd, list_env, str);
-	write(2, "\e[0;31mminishell: command not found\e[m\n", 39);
 	exit(127);
 }
 
@@ -78,10 +77,8 @@ void	all_cmd(t_arg *cmd, t_list *export_list, t_list *env_list)
 	exit(0);
 }
 
-void	ft_reead_2(char *str, t_list **export_list, t_list *env_list)
+void	ft_reead_2(char *str, t_list **export_list, t_list *env_list, char *tmp)
 {
-	char	*tmp;
-
 	tmp = malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (!tmp)
 		exit(0);
@@ -89,7 +86,6 @@ void	ft_reead_2(char *str, t_list **export_list, t_list *env_list)
 	if (ft_parsing(tmp) || token_line(str, *export_list, env_list))
 	{
 		printf("\e[0;31msyntax error\n");
-		free(str);
 		g_ext_s = 258;
 	}
 }
@@ -99,12 +95,8 @@ void	default_cmd(t_data *data, char *line, t_list *expo)
 	while (line[(data->i)] && !is_char(line[data->i]))
 	{
 		if (line[data->i] == '$' && (ft_isalpha(line[data->i + 1])
-				|| line[data->i + 1] == '_' || line[data->i + 1] == '?'))
-		{
+				|| line[data->i + 1] == '_'))
 			data->str = ft_expand(line, &data->i, data->str, expo);
-			if (line[data->i] == '?')
-				data->i++;
-		}
 		else if (line[(data->i)] != '\"' && line[data->i] != '\''
 			&& line[(data->i)])
 			data->str = append_char(data->str, line[(data->i)++]);

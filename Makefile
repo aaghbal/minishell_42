@@ -6,7 +6,7 @@
 #    By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/14 04:51:47 by zel-kach          #+#    #+#              #
-#    Updated: 2023/07/26 18:22:06 by aaghbal          ###   ########.fr        #
+#    Updated: 2023/07/04 17:10:02 by aaghbal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,7 @@ SRC = minishell.c cmds.c execute_utils.c execute.c \
 	 arg.c parsing_2.c parsing.c token_2.c token.c \
 	 utils.c signals.c export_helper.c execute_utils2.c \
 	 execute2.c pwd.c here_doc_utils.c utils_2.c execute_utils3.c \
-	 ft_free.c cmds_2.c parsing_3.c parsing_4.c arg_2.c redirect22.c \
-	 execute_utils4.c
-
+	 ft_free.c cmds_2.c parsing_3.c parsing_4.c arg_2.c
 OBJ = ${SRC:.c=.o}
 
 libfta = ./libft/libft.a
@@ -28,12 +26,12 @@ CC = cc
 
 RM = rm -f
 
-CFLAGS = -Wall -Wextra -Werror -I /goinfre/aaghbal/homebrew/opt/readline/include
+CFLAGS = -Wall -Wextra -Werror -I $(shell brew --prefix readline)/include
 
 all: libftm ${NAME}
 
 ${NAME}: ${OBJ}
-		${CC} ${OBJ} ${libfta} -L /goinfre/aaghbal/homebrew/opt/readline/lib -lreadline -o $@ 
+		${CC} ${OBJ} ${libfta} -L $(shell brew --prefix readline)/lib -lreadline -o $@ 
 %.o: %.c minishell.h ${libfta}
 		${CC} ${CFLAGS} -c $<
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zel-kach <zel-kach@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/14 07:52:35 by zel-kach          #+#    #+#             */
-/*   Updated: 2023/07/26 14:45:33 by zel-kach         ###   ########.fr       */
+/*   Updated: 2023/07/04 15:42:53 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ void	here_doc3(t_arg *tmp, t_arg *file, int fd[2])
 
 void	here_doc2(t_arg *tmp, int fd[2], t_arg *file)
 {
+	int		i;
+
+	i = 0;
 	here_doc3(tmp, file, fd);
 }
 
