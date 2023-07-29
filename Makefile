@@ -6,7 +6,7 @@
 #    By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/14 04:51:47 by zel-kach          #+#    #+#              #
-#    Updated: 2023/07/04 17:10:02 by aaghbal          ###   ########.fr        #
+#    Updated: 2023/07/28 11:58:41 by aaghbal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,12 +26,12 @@ CC = cc
 
 RM = rm -f
 
-CFLAGS = -Wall -Wextra -Werror -I $(shell brew --prefix readline)/include
+CFLAGS = -Wall -Wextra -Werror -g -I $(shell brew --prefix readline)/include
 
 all: libftm ${NAME}
 
 ${NAME}: ${OBJ}
-		${CC} ${OBJ} ${libfta} -L $(shell brew --prefix readline)/lib -lreadline -o $@ 
+		${CC} ${CFLAGS}  ${OBJ} ${libfta} -L $(shell brew --prefix readline)/lib -lreadline -o $@ 
 %.o: %.c minishell.h ${libfta}
 		${CC} ${CFLAGS} -c $<
 

@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:14:04 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/04 15:47:58 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/29 16:16:39 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ char	*ft_check_expand(t_list *expo, char *str, char *tmp)
 	while (expo)
 	{
 		tmp2 = ft_split(expo->content, '=');
-		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0])))
+		if (tmp2 && !ft_strncmp(tmp, tmp2[0], ft_strlen(tmp2[0]))
+			&& ft_strlen(tmp2[0]) == ft_strlen(tmp))
 		{
 			tmp2[1] = ft_remove_sp(tmp2[1]);
 			str = ft_strjoin(str, tmp2[1]);

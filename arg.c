@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 13:32:27 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/07/04 15:30:27 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/29 16:13:13 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,14 @@ void	append_word_2(char **tmp, t_arg **arg)
 	t_arg	*tmp2;
 
 	i = 1;
-	while (tmp[i])
+	while (tmp && tmp[i])
 	{
 		tmp2 = ft_arglast(*arg);
 		tmp2->arg = alloc_arg(tmp2->arg, tmp[i]);
+		printf("donnne\n");
 		i++;
 	}
+	printf("uesyses\n");
 }
 
 void	apend_redirection(t_token **tmp, t_arg **arg)
@@ -75,14 +77,9 @@ void	apend_redirection(t_token **tmp, t_arg **arg)
 
 void	is_arg(t_token *tmp, t_arg **arg)
 {
-	char	**tmp2;
-
 	while (tmp)
 	{
-		tmp2 = ft_split(tmp->cmd, ' ');
-		if (tmp2[1] && ft_strncmp(tmp->cmd, "echo", 5))
-			is_echo(&tmp, arg, tmp2);
-		else if (tmp->type == tokenword || tmp->key == 1)
+		if (tmp->type == tokenword || tmp->key == 1)
 			is_tokkenword(&tmp, arg);
 		else
 		{
@@ -97,6 +94,5 @@ void	is_arg(t_token *tmp, t_arg **arg)
 				}
 			}
 		}
-		free_tabb(tmp2);
 	}
 }

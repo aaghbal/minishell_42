@@ -6,7 +6,7 @@
 /*   By: aaghbal <aaghbal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:19:13 by aaghbal           #+#    #+#             */
-/*   Updated: 2023/06/23 22:20:51 by aaghbal          ###   ########.fr       */
+/*   Updated: 2023/07/29 16:18:25 by aaghbal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,16 @@ void	free_tabb(char **tabb)
 
 void	free_list(t_token *tabb)
 {
+	t_token	*tmp;
+
 	while (tabb->next)
 	{
+		tmp = tabb->next;
 		if (tabb->cmd)
 			free(tabb->cmd);
 		if (tabb)
 			free(tabb);
-		tabb = tabb->next;
+		tabb = tmp;
 	}
 	if (tabb->cmd[0])
 		free(tabb->cmd);
@@ -40,13 +43,16 @@ void	free_list(t_token *tabb)
 
 void	free_arg(t_arg *str)
 {
+	t_arg	*tmp;
+
 	while (str)
 	{
+		tmp = str->next;
 		free(str->cmd);
 		free_tabb(str->arg);
-		free(str);
 		if (str->redfile)
 			free(str->redfile);
-		str = str->next;
+		free(str);
+		str = tmp;
 	}
 }
